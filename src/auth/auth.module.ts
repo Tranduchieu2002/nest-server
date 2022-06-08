@@ -37,3 +37,5 @@ import { AuthService } from './services/auth.service';
   providers: [AuthService, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {}
+
+}
