@@ -1,0 +1,10 @@
+GET  http://localhost:3333/localhost:3333/auth/signup HTTP/1.1
+
+POST http://localhost:3333/auth HTTP/1.2
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+/////
