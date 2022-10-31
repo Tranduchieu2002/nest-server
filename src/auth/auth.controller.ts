@@ -6,7 +6,7 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { SignInDto } from './dtos/signin.dto';
