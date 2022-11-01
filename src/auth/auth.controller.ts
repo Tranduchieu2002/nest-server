@@ -17,7 +17,6 @@ import { AuthService } from './services/auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
   async signUp(
@@ -46,11 +45,12 @@ export class AuthController {
     });
     return rest;
   }
+  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Get('login')
+  @Post('login')
   login() {}
 
-  @Get('refresh')
+  @Get('refresh');
   @HttpCode(HttpStatus.OK)
   refresh(@Req() request: Request) {
     this.authService.refeshToken(request.cookies['user']);
