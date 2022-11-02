@@ -9,17 +9,16 @@ export class JwtStrategy extends PassportStrategy(Strategy, jwtGuardKey) {
   constructor(private configService: AppConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        JwtStrategy.extractJWT,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
+        JwtStrategy.extractJWT,
       ]),
       secretOrKey: configService.authConfig.publicKey,
     });
   }
 
   private static extractJWT(req: Request): string | null {
-    console.log(req.cookies);
-    if (req.cookies && 'accessToken' in req.cookies) {
-      return req.cookies.accessToken;
+    if (req.cookies && 'ac' in req.cookies) {
+      return req.cookies['ac'];
     }
     return null;
   }

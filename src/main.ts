@@ -1,20 +1,23 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import Cookie from 'cookie-parser';
+import cookieParser from 'cookie-parser';
+import { AppConfigService } from 'shared/services/app-configs.service';
+import { SharedModule } from 'shared/shared.module';
 import { AppModule } from './app.module';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: 'http://localhost',
-      methods: '*',
-    },
+  const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
+  const configService = app.select(SharedModule).get(AppConfigService);
+  console.log(configService.frontEndUrl);
+  app.enableCors({
+    origin: configService.frontEndUrl,
+    credentials: true,
   });
   ConfigModule.forRoot({
     envFilePath: '.env.devlopment',
     isGlobal: true,
   });
-  app.use(Cookie());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

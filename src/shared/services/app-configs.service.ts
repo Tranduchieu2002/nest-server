@@ -12,6 +12,10 @@ export class AppConfigService {
     return this.nodeEnv === 'production';
   }
 
+  get frontEndUrl() {
+    return this.getString('FRONTEND_DOMAIN');
+  }
+
   get authConfig() {
     return {
       privateKey: this.getString('JWT_PRIVATE_KEY'),

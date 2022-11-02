@@ -6,16 +6,19 @@ import {
   Post,
   Req,
   Res,
-  UseGuards
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { AppConfigService } from 'shared/services/app-configs.service';
 import { SignInDto } from './dtos/signin.dto';
-import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './services/auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: AppConfigService,
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
@@ -24,38 +27,43 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const signInDto: SignInDto = request.body;
-    const { refreshToken, accessToken, ...rest } =
-      await this.authService.signup({
-        email: signInDto.email,
-        password: signInDto.password,
-      });
-    console.log('first');
-    const rfTokenExpiresDay = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000); // 15ds
-    response.cookie('accessToken'.toString(), accessToken, {
-      expires: new Date(Date.now() + /* 15 * */ 60 * 1000), // 15m * 60s * 1000mls
-      httpOnly: true,
+    const user = await this.authService.signup({
+      email: signInDto.email,
+      password: signInDto.password,
     });
-    response.cookie('refreshToken', refreshToken, {
-      expires: rfTokenExpiresDay, // 15m
-      httpOnly: true,
-    });
-    response.cookie('rfTokenExpiresDay', rfTokenExpiresDay, {
-      expires: rfTokenExpiresDay, // 15ds
-      httpOnly: true,
-    });
-    return rest;
+    return user;
   }
-  @UseGuards(LocalAuthGuard)
+
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login() {}
-
-  @Get('refresh');
-  @HttpCode(HttpStatus.OK)
-  refresh(@Req() request: Request) {
-    this.authService.refeshToken(request.cookies['user']);
+  async login(@Req() req: Request) {
+    const signInDto: SignInDto = req.body;
+    if (!signInDto) return;
+    const { accessToken, refreshToken, rfExpiresTime, acExpiresTime } =
+      await this.authService.generateTokens(signInDto);
     return {
-      message: 'login successed',
+      message: 'ok',
+      accessToken,
+      refreshToken,
+      rfExpiresTime,
+      acExpiresTime,
+    };
+  }
+
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const isValidToken = this.authService.validateToken(req.cookies['RF']);
+    if (!isValidToken) throw new UnauthorizedException();
+    const { accessToken, expirseTime } = await this.authService.refeshToken(
+      req.cookies['user'],
+    );
+    return {
+      message: 'ok',
+      accessToken,
     };
   }
 }
