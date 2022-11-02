@@ -9,6 +9,11 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { AuthService } from './services/auth.service';
 
+export interface IJwtConfigs {
+  rfExpiresTime: number;
+  acExpiresTime: number;
+}
+
 @Module({
   exports: [AuthService, JwtModule],
   imports: [
