@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 @Injectable()
 export class AppConfigService {
@@ -29,7 +30,33 @@ export class AppConfigService {
       port: this.getString('PORT'),
     };
   }
+  get postgresConfig(): TypeOrmModuleOptions {
+    let entities = [
+      __dirname + '/../../modules/**/*.entity{.ts,.js}',
+      __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
+    ];
+    let migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
 
+    const entityContext = [__dirname + '/../**/*.entity{.ts,.js}'];
+
+    return {
+      entities,
+      migrations,
+      keepConnectionAlive: !this.isDevelopment,
+      dropSchema: this.isDevelopment,
+      type: 'postgres',
+      name: 'default',
+      host: this.getString('DB_HOST'),
+      port: this.getNumber('DB_PORT'),
+      username: this.getString('DB_USERNAME'),
+      password: this.getString('DB_PASSWORD'),
+      database: this.getString('DB_DATABASE'),
+      // subscribers: [UserSubscriber],
+      migrationsRun: true,
+      // logging: this.getBoolean('ENABLE_ORM_LOGS'),
+      // namingStrategy: new SnakeNamingStrategy(),
+    };
+  }
   get nodeEnv(): string {
     return this.getString('NODE_ENV');
   }
