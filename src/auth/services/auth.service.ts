@@ -30,10 +30,11 @@ export class AuthService {
   }
 
   async refeshToken(payload) {
-    const accessToken = await this.generateAccessToken(payload);
+    const { accessToken, expiresIn } = await this.generateAccessToken(payload);
     return {
       expirseTime: new Date(Date.now() + /* 15 * */ 60 * 1000),
       accessToken,
+      expiresIn,
     };
   }
 
@@ -43,11 +44,11 @@ export class AuthService {
       accessToken: string;
     } & IJwtConfigs
   > {
-    const accessToken = await this.generateAccessToken(payload);
+    const { expiresIn, accessToken } = await this.generateAccessToken(payload);
     const rtExpiresTime = '15d';
     const JWTConfigs: IJwtConfigs = {
-      rfExpiresTime: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).getTime(), // 15ds
-      acExpiresTime: new Date(Date.now() + /* 15 * */ 60 * 1000).getTime(),
+      rfExpiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).getTime(), // 15ds
+      acExpiresAt: new Date(Date.now() + expiresIn * 1000).getTime(),
     };
     const generateRfToken = await this.jwtService.signAsync(payload, {
       expiresIn: rtExpiresTime,
@@ -55,6 +56,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken: generateRfToken,
+      expiresIn,
       ...JWTConfigs,
     };
   }
@@ -80,11 +82,17 @@ export class AuthService {
     });
   }
 
-  async generateAccessToken(payload): Promise<string> {
+  async generateAccessToken(payload): Promise<{
+    accessToken: string;
+    expiresIn: number;
+  }> {
     const accessToken = await this.jwtService.signAsync(payload, {
       expiresIn: this.configService.authConfig.jwtExpirationTime,
     });
-    return accessToken;
+    return {
+      accessToken,
+      expiresIn: this.configService.authConfig.jwtExpirationTime,
+    };
   }
   validateToken(token: string) {
     return !!this.jwtService.verify(token, {

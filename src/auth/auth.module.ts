@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppConfigService } from 'shared/services/app-configs.service';
 import { SharedModule } from 'shared/shared.module';
 import { UserModule } from 'user/user.module';
@@ -10,8 +11,9 @@ import { LocalStrategy } from './local.strategy';
 import { AuthService } from './services/auth.service';
 
 export interface IJwtConfigs {
-  rfExpiresTime: number;
-  acExpiresTime: number;
+  rfExpiresAt: number;
+  acExpiresAt: number;
+  expiresIn?: number;
 }
 
 @Module({
@@ -32,6 +34,12 @@ export interface IJwtConfigs {
             algorithms: ['RS256'],
           },
         };
+      },
+      inject: [AppConfigService],
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: AppConfigService) => {
+        return configService.postgresConfig;
       },
       inject: [AppConfigService],
     }),
