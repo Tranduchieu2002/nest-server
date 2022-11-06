@@ -12,11 +12,12 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "noEmit": false,     // <- remove this or set to false
+    "incremental": false,
     "target": "ES2017",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./src",
-    "incremental": true,
     "strictNullChecks": true
   },
   "include": [

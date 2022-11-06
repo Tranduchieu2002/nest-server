@@ -1,5 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src/*"
+  "sourceRoot": "src/*",
+  "assets": [
+    {
+        "include": "i18n/*.json",
+        "outDir": "dist/src"
+      }
+]
 }
