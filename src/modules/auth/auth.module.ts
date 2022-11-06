@@ -1,10 +1,9 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from 'modules/user/user.module';
 import { AppConfigService } from 'shared/services/app-configs.service';
 import { SharedModule } from 'shared/shared.module';
-import { UserModule } from 'user/user.module';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
@@ -34,12 +33,6 @@ export interface IJwtConfigs {
             algorithms: ['RS256'],
           },
         };
-      },
-      inject: [AppConfigService],
-    }),
-    TypeOrmModule.forRootAsync({
-      useFactory: (configService: AppConfigService) => {
-        return configService.postgresConfig;
       },
       inject: [AppConfigService],
     }),

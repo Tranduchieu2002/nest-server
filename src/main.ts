@@ -5,11 +5,11 @@ import cookieParser from 'cookie-parser';
 import { AppConfigService } from 'shared/services/app-configs.service';
 import { SharedModule } from 'shared/shared.module';
 import { AppModule } from './app.module';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   const configService = app.select(SharedModule).get(AppConfigService);
-  console.log(configService.frontEndUrl);
   app.enableCors({
     origin: configService.frontEndUrl,
     credentials: true,
@@ -29,4 +29,5 @@ async function bootstrap() {
   );
   await app.listen(3000);
 }
+
 bootstrap();

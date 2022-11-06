@@ -1,9 +1,10 @@
 version: "3.9"
 services:
   app:
+    image: learn_nest:v0.0.1
     env_file:
       - .env.development
-    container_name: awesome_nest_boilerplate
+    container_name: nest-server
     restart: always
     build: .
     ports:
@@ -12,22 +13,28 @@ services:
       - postgres
   postgres:
     image: postgres
-    container_name: postgres
+    container_name: base_app
     restart: always
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
       TZ: 'GMT'
       PGTZ: 'GMT'
     ports:
       - "5432:5432"
     volumes:
-      - postgres:/data/postgres
       - ./init-data.sh:/docker-entrypoint-initdb.d/init-data.sh
+      - postgres:/var/lib/postgresql/data
     env_file:
       - .env.development
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
+    environment:
+      environment:
+      PGADMIN_DEFAULT_EMAIL: admin@linuxhint.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 80
     ports:
       - "8080:80"
     volumes:
