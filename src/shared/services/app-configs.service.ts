@@ -4,7 +4,6 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 @Injectable()
 export class AppConfigService {
-  
   constructor(private readonly configService: ConfigService) {}
   get isDevelopment(): boolean {
     return this.nodeEnv === 'development';
@@ -32,7 +31,7 @@ export class AppConfigService {
     };
   }
   getBoolean(key: string): boolean {
-    return Boolean(this.get(key))
+    return Boolean(this.get(key));
   }
   get postgresConfig(): TypeOrmModuleOptions {
     let entities = [
@@ -57,6 +56,7 @@ export class AppConfigService {
       database: this.getString('DB_DATABASE'),
       // subscribers: [UserSubscriber],
       migrationsRun: true,
+      synchronize: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
       // namingStrategy: new SnakeNamingStrategy(),
     };

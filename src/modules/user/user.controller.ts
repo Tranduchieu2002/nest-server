@@ -1,8 +1,11 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { Auth } from 'modules/auth/auth.decorator';
+import { Auth } from '../../modules/auth/auth.decorator';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
+  constructor(private readonly userService: UserService) {}
+
   @Get('signin')
   @Auth()
   @HttpCode(HttpStatus.OK)
@@ -11,4 +14,13 @@ export class UserController {
       message: 'successed',
     };
   }
+
+  // @Post('create')
+  // @HttpCode(HttpStatus.CREATED)
+  // create(@Body() user: UserDto) {
+  //   this.userService.createUser(user);
+  //   return {
+  //     message: 'ok',
+  //   };
+  // }
 }

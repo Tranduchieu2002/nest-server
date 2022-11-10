@@ -1,5 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from './user.controller';
+import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
 interface UserConfigs {
@@ -16,7 +18,7 @@ export class UserModule {
   static register(data: UserConfigs): DynamicModule {
     return {
       module: UserModule,
-      // imports: [forwardRef(() => AuthModule)],
+      imports: [TypeOrmModule.forFeature([UserEntity])],
       exports: [UserService],
       controllers: [UserController],
       providers: [

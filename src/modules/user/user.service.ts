@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { FindOptionsWhere } from 'typeorm';
+import { SignInDto } from '../../dtos/auth/signin.dto';
+import { UserDto } from './dtos/user.dto';
+import { UserEntity } from './user.entity';
 
 interface User {
   id: string;
@@ -7,23 +12,15 @@ interface User {
 }
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [
-    {
-      id: '1',
-      email: 'cuhieu04112002@gmail.com',
-      password: '1234',
-    },
-  ];
-  constructor(
-    @Inject('USER_CONFIGS')
-    private readonly userConfigs,
-  ) {}
-  async findOne(
-    needValiteValue: Omit<User, 'id'>,
-  ): Promise<{ id: string; email: string } | undefined> {
-    return this.users.find((user: User) => needValiteValue.email == user.email);
+  // constructor(private readonly userRepository: Repository<UserEntity>) {}
+  findOne(findData: FindOptionsWhere<UserEntity>): UserEntity | null {
+    return null;
   }
-  save(data) {
-    console.log(this.userConfigs, data);
+  async createUser(userRegisterDto: SignInDto): Promise<any> {
+    // const user = this.userRepository.create(userRegisterDto);
+
+    // await this.userRepository.save(user);
+
+    return plainToInstance(UserDto, userRegisterDto);
   }
 }
