@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -9,27 +10,25 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { AppConfigService } from 'shared/services/app-configs.service';
 import { SignInDto } from '../../dtos/auth/signin.dto';
+import { UserService } from '../../modules/user/user.service';
 import { AuthService } from './services/auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: AppConfigService,
+    private readonly userSevicer: UserService,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
-  async signUp(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    const signInDto: SignInDto = request.body;
-    const user = await this.authService.signup({
+  async signUp(@Body() userRegisterDto: SignInDto) {
+    const signInDto: SignInDto = userRegisterDto;
+    const user = await this.userSevicer.createUser({
       email: signInDto.email,
       password: signInDto.password,
+      remember: false,
     });
     return user;
   }
