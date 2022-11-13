@@ -1,8 +1,9 @@
 import {
   Column,
   CreateDateColumn,
-  Entity,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { BaseDto } from './base.dto';
 
@@ -16,7 +17,6 @@ export interface IAbstractEntity<DTO extends BaseDto, O = never> {
 
   // toDto(options?: O): DTO;
 }
-@Entity()
 export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   implements IAbstractEntity<Dto, O>
 {
@@ -31,22 +31,22 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   })
   createdAt: Date;
 
-  @CreateDateColumn({
+  @DeleteDateColumn({
     type: 'timestamp',
   })
   deletedAt: Date;
 
-  @CreateDateColumn({
+  @UpdateDateColumn({
     type: 'timestamp',
   })
   updatedAt: Date;
 
   @Column()
   isPublished: boolean;
-  constructor(baseDto: BaseDto) {
-    this.id = baseDto.id;
-    this.createdAt = baseDto.createdAt;
-  }
+  // constructor(baseDto: BaseDto) {
+  //   this.id = baseDto.id;
+  //   this.createdAt = baseDto.createdAt;
+  // }
 }
 
 export interface IBaseEntity<DTO extends BaseDto, O = never> {

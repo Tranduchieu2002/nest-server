@@ -18,14 +18,12 @@ export function UseDto(
     ctor.prototype.dtoClass = dtoClass;
   };
 }
-@Entity({
-  name: 'user',
-})
+@Entity({ name: 'users' })
 @UseDto(UserDto)
 export class UserEntity extends BaseEntity<UserDto> implements IUserEntity {
   @Column({ unique: true, nullable: true })
   email?: string;
 
-  @Column('string')
-  password: string;
+  @Column({ nullable: true })
+  password?: string;
 }
