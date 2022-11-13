@@ -40,7 +40,6 @@ export class AuthController {
     const signInDto: SignInDto = req.body;
     if (!signInDto) return;
     const tokenConfigs = await this.authService.generateTokens(signInDto);
-    console.log(tokenConfigs);
     return {
       message: 'ok',
       ...tokenConfigs,

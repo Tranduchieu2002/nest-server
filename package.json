@@ -7,6 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
+    "build": "nest build",
+    "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
     "build:prod": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

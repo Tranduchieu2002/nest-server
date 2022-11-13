@@ -7,3 +7,22 @@ Content-Type: application/json
     "email": "cuhieu04112002@gmail.com",
     "password": "1234"
 }
+
+###
+POST  http://localhost:3000/auth/login HTTP/1.2
+Content-Type: application/json
+
+{
+    "email": "cuhieu04112002@gmail.com",
+    "password": "1234"
+}
+
+###
+
+GET http://localhost:3000/user/me
+Authorization: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImN1aGlldTA0MTEyMDAyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNCIsImlhdCI6MTY2ODM3NDQzNiwiZXhwIjoxNjY4Mzc0NDk2fQ.bQ4Fo52tEbQbHqjPDInZVFIagfO_pHyKgBH9_Em-skKIj96nf13H36zEBcOv7q2TR0wzQheb5JLaLKZgYnwLZcfFyEoTh70LvmkVvWxgTMXzsyzUiXC_ANyTq0tBmtADGJ_g_KYnl8U5pXn6qLDfLazYCDaKAOeVh83HxFj1-uenMy_5TCul-wZ01GCM5X5x2tjZXb2z5htRVG-F4ktDvmmveifMFwqEf-erVx5F6wTEr4E_vI99zoSInWTm66qEYHPN10lmOF7jOl10jBnG-BXmhQSy-XYkos1IMw6t0ltK9nJkxwbBN7_Q5a6bmejl5IB9WtGVaaYUqvcuF98W3tpBjO847VOipGvbY02RIFENcS35Wd2VK69t6s3ahkBGrX1EUp3mnlbPEMTRwctL1_fkZrxZNNU6Uax4W1gJuLlbV1RaBx0MANCtyVUZe1bEq5bBFTdF16A48R4n9EjFbv-AHZGjtH9DW27Myvll8Pu8FRHpQV4ujHq4EE5w4fxDmj_xGbcTY-oJqegpe9n03S2108ABj2V8vAC0vNAhqI6d8l4HlGAvPaOEer64zTulgwTj5bCNvs02tJ3e2rfvm0lVo-d2KrHr3_NNbC9KAA0weaIoijnjhTEDM43wZOogQo2ZPhnlw90eh-Tk7oGH2zzQlKqHQMGEMqFnbiggFik"
+Content-Type: application/json
+
+{
+    "role": "USER"
+}
