@@ -1,3 +1,4 @@
+import { Constructor } from 'modules/user/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -15,7 +16,7 @@ export interface IAbstractEntity<DTO extends BaseDto, O = never> {
   createdAt: Date;
   updatedAt: Date;
 
-  // toDto(options?: O): DTO;
+  toDto(options?: O): DTO;
 }
 export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   implements IAbstractEntity<Dto, O>
@@ -23,30 +24,39 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   @PrimaryGeneratedColumn('uuid')
   id: Uuid;
 
-  @Column('text')
-  description: string;
-
   @CreateDateColumn({
     type: 'timestamp',
+    default: new Date(),
   })
   createdAt: Date;
 
   @DeleteDateColumn({
     type: 'timestamp',
+    default: null,
   })
   deletedAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
+    default: null,
   })
   updatedAt: Date;
 
-  @Column()
+  @Column({
+    type: 'boolean',
+    default: true,
+  })
   isPublished: boolean;
-  // constructor(baseDto: BaseDto) {
-  //   this.id = baseDto.id;
-  //   this.createdAt = baseDto.createdAt;
-  // }
+
+  private dtoClass?: Constructor<Dto, [BaseEntity, O?]>;
+
+  toDto(options?: O): Dto {
+    const dtoClass = this.dtoClass;
+    if (!dtoClass) {
+      throw new Error('should use decorator use dto');
+    }
+    return new dtoClass(this, options);
+  }
 }
 
 export interface IBaseEntity<DTO extends BaseDto, O = never> {

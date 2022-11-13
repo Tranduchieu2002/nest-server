@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { FindOptionsWhere } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { SignInDto } from '../../dtos/auth/signin.dto';
 import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
@@ -12,15 +12,18 @@ interface User {
 }
 @Injectable()
 export class UserService {
-  // constructor(private readonly userRepository: Repository<UserEntity>) {}
-  findOne(findData: FindOptionsWhere<UserEntity>): UserEntity | null {
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
+  findOne(findData: FindOptionsWhere<UserEntity>): UserDto | null {
     return null;
   }
-  async createUser(userRegisterDto: SignInDto): Promise<any> {
-    // const user = this.userRepository.create(userRegisterDto);
+  async createUser(userRegisterDto: SignInDto): Promise<UserEntity> {
+    const user = this.userRepository.create(userRegisterDto);
 
-    // await this.userRepository.save(user);
+    await this.userRepository.save(user);
 
-    return plainToInstance(UserDto, userRegisterDto);
+    return user;
   }
 }

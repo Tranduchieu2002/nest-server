@@ -11,8 +11,10 @@ export class CreateUsersTable1622299665807 implements MigrationInterface {
       CREATE TABLE "users"
       (
         "id"         uuid              NOT NULL DEFAULT uuid_generate_v4(),
-        "created_at" TIMESTAMP         NOT NULL DEFAULT now(),
-        "updated_at" TIMESTAMP         NOT NULL DEFAULT now(),
+        "createdAt" TIMESTAMP         NOT NULL DEFAULT now(),
+        "updatedAt" TIMESTAMP         NOT NULL DEFAULT now(),
+        "deletedAt" TIMESTAMP         NOT NULL DEFAULT now(),
+        "isPublished" boolean         NOT NULL DEFAULT true,
         "email"      character varying,
         "password"   character varying,
         CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"),
