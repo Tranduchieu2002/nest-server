@@ -1,56 +1,9 @@
 ###
 
-POST  http://localhost:3000/auth/signin HTTP/1.2
+POST  http://localhost:3000/auth/signup HTTP/1.2
 Content-Type: application/json
 
 {
     "email": "cuhieu04112002@gmail.com",
     "password": "1234"
 }
-
-###
-version: "3"
-services:
-  app:
-    env_file:
-      - .env
-    container_name: awesome_nest_boilerplate
-    restart: always
-    build: .
-    ports:
-      - "$PORT:$PORT"
-    links:
-      - postgres
-  postgres:
-    image: postgres
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: postgres
-      TZ: 'GMT'
-      PGTZ: 'GMT'
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres:/data/postgres
-      - ./init-data.sh:/docker-entrypoint-initdb.d/init-data.sh
-    env_file:
-      - .env
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    ports:
-      - "8080:80"
-    volumes:
-      - /data/pgadmin:/root/.pgadmin
-    env_file:
-      - .env
-    links:
-      - postgres
-
-volumes:
-  postgres:
-    driver: local
-GET http://localhost:3000/auth/hi
-
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImN1aGlldTA0MTEyMDAyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNCIsImlhdCI6MTY2NzIxMzQxMiwiZXhwIjoxNjY3MjEzNDcyfQ.mhlQZ9Qn-F3YQCkXAvP30XB7D6_ijjE_jpd0Lx3H0EqVuDZiW3K3LMgcvnZ6L7I2llSeCc-KSvHAVayPqnDXjb_VAErQiwhSbgo7CRtdItHHgAm0mmZokUP6CpklLZf9EVmwpiNCXP9dimCPm-9EwI558l5Tli1Pcgx1WfTe3cLA-BszuP2M_w72HWgb2_gJumzapVJedvopwBOsuwhmDXcy7p6yqgz7wGf7Eco3l3tRi8ZlaXu1oxaxvL7iTjqtoLB2BdjMSKB6T5kc82ak7_IkkYnmqPVWxMUJEI6OkCqVPuEXIN_WKPDzhqZ9MBB5Zj5oI_nSp_CGKfn2VeKLi_6De8ptk_9WUrtVnQDI7mHs-FR0JrmbW8zCkZMkg4h5fM3xXb2882rJ9D8BWqYqo89nQcCp26jam00a1PTB4TozVXs8e4CfHfyBRFCDw0secAEIq-QCg8smdV_pOJIBI8aSss8WB6hGmdV2Z9y4ZObHweTvi1y0c-QbIG3CUJ6mXLi2wIPJO8yTAHdMZiVa-oi6-agBqgzeiDhFUmO7BRBfoaiioeGXY3NPT_v1EsUCY_Uf4SNsTJAcXbx2vwo-0Uel0XEtZKahIW_3lkgyKa6lk4PG_8DTyIGSgw8a64zZLeE7PuS6LHxWdqCn_fAs1ozj0YUzkrqfT7nutzvoQNU

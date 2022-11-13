@@ -15,7 +15,7 @@ export class BaseDto {
 
   constructor(entity: BaseEntity, options?: BaseDtoOptions) {
     if (!options?.excludeFields) {
-      this.id = entity.id;
+      this.id = entity?.id;
 
       this.createdAt = entity.createdAt;
 

@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { UserDto } from 'modules/user/dtos/user.dto';
 import { SignInDto } from '../../dtos/auth/signin.dto';
 import { UserService } from '../../modules/user/user.service';
 import { AuthService } from './services/auth.service';
@@ -23,14 +24,14 @@ export class AuthController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
-  async signUp(@Body() userRegisterDto: SignInDto) {
+  async signUp(@Body() userRegisterDto: SignInDto): Promise<UserDto> {
     const signInDto: SignInDto = userRegisterDto;
     const user = await this.userSevicer.createUser({
       email: signInDto.email,
       password: signInDto.password,
       remember: false,
     });
-    return user;
+    return user.toDto();
   }
 
   @HttpCode(HttpStatus.OK)
