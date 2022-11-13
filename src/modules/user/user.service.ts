@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { SignInDto } from '../../dtos/auth/signin.dto';
-import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
 
 interface User {
@@ -16,8 +15,8 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
-  findOne(findData: FindOptionsWhere<UserEntity>): UserDto | null {
-    return null;
+  findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
+    return this.userRepository.findOneBy(findData);
   }
   async createUser(userRegisterDto: SignInDto): Promise<UserEntity> {
     const user = this.userRepository.create(userRegisterDto);
