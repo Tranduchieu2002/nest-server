@@ -1,34 +1,82 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { UserEntity } from 'modules/user/user.entity';
+import { SignInDto } from '../../../dtos/auth/signin.dto';
+import { UserAlreadyExistException } from '../../../exceptions/exist-email';
 import { IJwtConfigs } from '../../../modules/auth/auth.module';
 import { UserService } from '../../../modules/user/user.service';
 import { AppConfigService } from '../../../shared/services/app-configs.service';
+import { BcryptService } from './bcrypt.service';
 
 @Injectable({})
 export class AuthService {
   constructor(
+    private userService: UserService,
     private jwtService: JwtService,
     private readonly userSevice: UserService,
     private configService: AppConfigService,
+    private bcryptService: BcryptService,
   ) {}
-  async validateUser(payload: { email: string; password: string }) {
-    const user = await this.userSevice.findOne(payload);
-    if (!user) return null;
-    return {
-      email: user.email,
-    };
+  async validateUser(email: string, password: string) {
+    try {
+      const user = await this.userSevice.findOne({
+        email,
+      });
+
+      if (!user) return null;
+
+      const isValidPassword = await this.verifyPassword(
+        password,
+        user.password,
+      );
+      console.log({ isValidPassword });
+      return user;
+    } catch (error) {
+      throw new HttpException(
+        "User and password doesn't match",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
-  async signup(payload: string | object | Buffer) {
-    const { accessToken, refreshToken } = await this.generateTokens(payload);
+  async registation(signupDto: SignInDto): Promise<UserEntity> {
+    // found email
+    let user: UserEntity;
+    try {
+      // const alreadyExist = await this.userService.findByEmail(signupDto.email);
+      // console.log({ alreadyExist });
+      // if (alreadyExist) throw new UserAlreadyExistException();
+      signupDto.password = this.bcryptService.generateHash(signupDto.password);
+
+      user = await this.userService.createUser(signupDto);
+
+      const { accessToken, refreshToken } = await this.generateTokens(
+        signupDto,
+      );
+    } catch (error) {
+      throw new UserAlreadyExistException();
+    }
+
     // connect db return user
-    return {
-      message: 'login successed!',
-      user: payload,
-    };
+    return user;
   }
-
+  private async verifyPassword(
+    plainTextPassword: string,
+    hashedPassword: string,
+  ) {
+    const isPasswordMatching = await this.bcryptService.verifyHash(
+      plainTextPassword,
+      hashedPassword,
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException(
+        "Email or password don't match ",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return !!isPasswordMatching;
+  }
   async refeshToken(payload) {
     const { accessToken, expiresIn } = await this.generateAccessToken(payload);
     return {

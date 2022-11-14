@@ -2,7 +2,6 @@ import { Constructor } from 'modules/user/user.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,7 +29,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   })
   createdAt: Date;
 
-  @DeleteDateColumn({
+  @Column({
     type: 'timestamp',
     default: null,
   })

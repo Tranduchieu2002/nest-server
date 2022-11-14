@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-POST  http://localhost:3000/auth/login HTTP/1.2
+POST http://localhost:3000/auth/login HTTP/1.2
 Content-Type: application/json
 
 {

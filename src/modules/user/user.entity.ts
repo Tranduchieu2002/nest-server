@@ -11,9 +11,6 @@ export interface IUserEntity extends IBaseEntity<UserDto> {
 
   role: ROLES;
 }
-export type Constructor<T, Arguments extends unknown[] = undefined[]> = new (
-  ...arguments_: Arguments
-) => T;
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
@@ -22,7 +19,7 @@ export class UserEntity extends BaseEntity<UserDto> implements IUserEntity {
   email?: string;
 
   @Column({ nullable: true })
-  password?: string;
+  password: string;
 
   @Column({ type: 'enum', enum: ROLES, default: ROLES.USER })
   role: ROLES;

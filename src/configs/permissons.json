@@ -1,0 +1,17 @@
+[
+  {
+    "name": "GUEST",
+    "permissons": [
+      "READ_CATEGORY"
+    ]
+  },
+  {
+    "name": "USER_PERMiSSIONS",
+    "permissons": [
+      "CREATE_CATEGORY",
+      "REMOVE_CATEGORY",
+      "UPDATE_CATEGORY",
+      "ADD_CATEGORY"
+    ]
+  }
+]
