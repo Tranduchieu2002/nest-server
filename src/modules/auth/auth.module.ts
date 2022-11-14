@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { AuthService } from './services/auth.service';
+import { BcryptService } from './services/bcrypt.service';
 export interface IJwtConfigs {
   rfExpiresAt: number;
   acExpiresAt: number;
@@ -43,6 +44,6 @@ export interface IJwtConfigs {
     SharedModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, BcryptService],
 })
 export class AuthModule {}
