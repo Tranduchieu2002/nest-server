@@ -8,10 +8,7 @@ import { jwtGuardKey } from './jwt.guard';
 export class JwtStrategy extends PassportStrategy(Strategy, jwtGuardKey) {
   constructor(private configService: AppConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        ExtractJwt.fromAuthHeaderAsBearerToken(),
-        // JwtStrategy.extractJWT,
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.authConfig.publicKey,
     });
   }

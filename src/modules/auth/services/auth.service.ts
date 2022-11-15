@@ -78,7 +78,9 @@ export class AuthService {
     return !!isPasswordMatching;
   }
   async refeshToken(payload) {
-    const { accessToken, expiresIn } = await this.generateAccessToken(payload);
+    const { accessToken, expiresIn } = await this.generateAccessToken(
+      JSON.parse(payload),
+    );
     return {
       expirseTime: new Date(Date.now() + /* 15 * */ 60 * 1000),
       accessToken,
