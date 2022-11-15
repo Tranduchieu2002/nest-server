@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -14,6 +15,7 @@ import { Request, Response } from 'express';
 import { UserDto } from 'modules/user/dtos/user.dto';
 import { SignInDto } from '../../dtos/auth/signin.dto';
 import { UserService } from '../../modules/user/user.service';
+import { Auth } from './auth.decorator';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './services/auth.service';
 
@@ -21,7 +23,7 @@ import { AuthService } from './services/auth.service';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userSevicer: UserService,
+    private readonly userServicer: UserService,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -42,10 +44,19 @@ export class AuthController {
   async login(@Req() req: Request) {
     const signInDto = req.body;
     const tokenConfigs = await this.authService.generateTokens(signInDto);
+    const user = (await this.userServicer.findByEmail(signInDto.email)).toDto();
     return {
       message: 'ok',
+      user,
       ...tokenConfigs,
     };
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @Auth()
+  me() {
+    return 'ok';
   }
 
   @Get('refresh')
@@ -54,7 +65,9 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const isValidToken = this.authService.validateToken(req.cookies['RF']);
+    const refeshToken = req.query.rf;
+    if (!refeshToken) throw new BadRequestException();
+    const isValidToken = this.authService.validateToken(refeshToken as string);
     if (!isValidToken) throw new UnauthorizedException();
     const { accessToken, expirseTime } = await this.authService.refeshToken(
       req.cookies['user'],

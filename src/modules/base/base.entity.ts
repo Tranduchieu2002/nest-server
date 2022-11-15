@@ -1,10 +1,10 @@
-import { Constructor } from 'modules/user/user.entity';
 import {
   Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Constructor } from 'types';
 import { BaseDto } from './base.dto';
 
 declare global {
