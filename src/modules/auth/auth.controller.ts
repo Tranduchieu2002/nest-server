@@ -43,8 +43,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   async login(@Req() req: Request) {
     const signInDto = req.body;
-    const tokenConfigs = await this.authService.generateTokens(signInDto);
     const user = (await this.userServicer.findByEmail(signInDto.email)).toDto();
+
+    console.log(user);
+    const tokenConfigs = await this.authService.generateTokens({ ...user });
     return {
       message: 'ok',
       user,

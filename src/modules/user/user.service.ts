@@ -1,15 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { SignInDto } from '../../dtos/auth/signin.dto';
+import { BaseService } from '../../modules/base/base.service';
+import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
 
 @Injectable()
-export class UserService {
+export class UserService extends BaseService<UserEntity, UserDto> {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  ) {
+    super(userRepository);
+  }
   async findOne(
     findData: FindOptionsWhere<UserEntity>,
   ): Promise<UserEntity | null> {
@@ -19,18 +23,6 @@ export class UserService {
         email: findData.email,
       })
       .getOne();
-  }
-
-  async validateUser(email: string, password: string) {
-    try {
-      const user = await this.findByEmail(email);
-      console.log(user);
-    } catch (e) {
-      throw new HttpException(
-        "User or password doesn't match",
-        HttpStatus.BAD_GATEWAY,
-      );
-    }
   }
 
   async findByEmail(email: string) {
