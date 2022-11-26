@@ -1,4 +1,4 @@
-import { BaseEntity } from './base.entity';
+import { BaseEntity, StatusEnum } from './base.entity';
 
 interface BaseDtoOptions {
   excludeFields: boolean;
@@ -13,6 +13,7 @@ export class BaseDto {
 
   deletedAt: Date;
 
+  status: StatusEnum;
   constructor(entity: BaseEntity, options?: BaseDtoOptions) {
     if (!options?.excludeFields) {
       this.id = entity?.id;
@@ -20,6 +21,8 @@ export class BaseDto {
       this.createdAt = entity.createdAt;
 
       this.updatedAt = entity.updatedAt;
+
+      this.status = entity.status;
     }
   }
 }

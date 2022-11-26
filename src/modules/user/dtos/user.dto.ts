@@ -13,13 +13,9 @@ export class UserDto extends BaseDto {
   password?: string;
   @IsEnum(ROLES)
   role: ROLES;
-  isActive?: boolean;
   constructor(user: UserEntity, options?: UserDtoOptions) {
     super(user);
     this.email = user.email;
-    this.role = user.role;
-
-    this.isActive = options?.isActive;
   }
   static plainToClass<T>(instance: new (...args: any[]) => T, object: T): T {
     return plainToInstance(instance, object, {

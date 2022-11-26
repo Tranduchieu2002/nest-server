@@ -6,6 +6,7 @@ import { SharedModule } from './shared/shared.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { PermissionsModule } from './modules/permissions/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { AppConfigService } from './shared/services/app-configs.service';
 
@@ -25,6 +26,7 @@ import { AppConfigService } from './shared/services/app-configs.service';
     }),
     SharedModule,
     UserModule.register({ name: ' duma ', password: 'con me no' }),
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

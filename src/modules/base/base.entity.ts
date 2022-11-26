@@ -45,7 +45,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
     type: 'boolean',
     default: true,
   })
-  isPublished: boolean;
+  status: StatusEnum;
 
   private dtoClass?: Constructor<Dto, [BaseEntity, O?]>;
 
@@ -63,4 +63,9 @@ export interface IBaseEntity<DTO extends BaseDto, O = never> {
   createdAt: Date;
   updatedAt: Date;
   deleteAt?: Date;
+}
+
+export enum StatusEnum {
+  Active = 'ACTIVE',
+  InActive = 'INACTIVE',
 }
