@@ -1,5 +1,4 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { ROLES } from '../../constants/roles';
 import { AuthDecorators } from '../../decorators/combine-decorators';
 import { UserService } from './user.service';
 
@@ -8,7 +7,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('me')
-  @AuthDecorators([ROLES.ADMIN, ROLES.USER])
+  @AuthDecorators([], { isPublic: false })
   @HttpCode(HttpStatus.OK)
   signIn() {
     return {

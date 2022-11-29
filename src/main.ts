@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { dataSource } from './data-source/postgresql.datasouce';
+import { SystemFileUtils } from './helpers/read-files';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { SharedModule } from './shared/shared.module';
 
@@ -27,6 +29,20 @@ async function bootstrap() {
       forbidUnknownValues: true,
     }),
   );
+  const defaultPermissions: any[] = await SystemFileUtils.getConfigs(
+    'permissons.json',
+  );
+  for (const role of defaultPermissions) {
+    console.log(role.name);
+  }
+  dataSource
+    .initialize()
+    .then(() => {
+      console.log('Data Source has been initialized successfully.');
+    })
+    .catch((err) => {
+      console.error('Error during Data Source initialization:', err);
+    });
   await app.listen(3000);
 }
 

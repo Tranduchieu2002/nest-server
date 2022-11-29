@@ -39,7 +39,6 @@ export class AppConfigService {
       __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
     ];
     let migrations = [__dirname + '/../../migrations/*{.ts,.js}'];
-    console.log(migrations);
     const entityContext = [__dirname + '/../**/*.entity{.ts,.js}'];
 
     return {
@@ -56,7 +55,7 @@ export class AppConfigService {
       database: this.getString('DB_DATABASE'),
       // subscribers: [UserSubscriber],
       migrationsRun: true,
-      synchronize: false,
+      synchronize: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
       // namingStrategy: new SnakeNamingStrategy(),
     };

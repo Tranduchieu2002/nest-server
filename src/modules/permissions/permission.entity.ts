@@ -14,8 +14,12 @@ export class PermissionsEntity
   implements IPermissionsEntity
 {
   @Column({
-    nullable: false,
-    unique: true,
+    type: 'varchar',
   })
   name: string;
+
+  @Column({
+    type: 'varchar',
+  })
+  model: string;
 }

@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { UserEntity } from 'modules/user/user.entity';
 import { SignInDto } from '../../../dtos/auth/signin.dto';
-import { UserAlreadyExistException } from '../../../exceptions/exist-email';
 import { IJwtConfigs } from '../../../modules/auth/auth.module';
 import { UserService } from '../../../modules/user/user.service';
 import { AppConfigService } from '../../../shared/services/app-configs.service';
@@ -43,20 +42,12 @@ export class AuthService {
   async registation(signupDto: SignInDto): Promise<UserEntity> {
     // found email
     let user: UserEntity;
-    try {
-      // const alreadyExist = await this.userService.findByEmail(signupDto.email);
-      // console.log({ alreadyExist });
-      // if (alreadyExist) throw new UserAlreadyExistException();
-      signupDto.password = this.bcryptService.generateHash(signupDto.password);
+    // const alreadyExist = await this.userService.findByEmail(signupDto.email);
+    // console.log({ alreadyExist });
+    // if (alreadyExist) throw new UserAlreadyExistException();
+    signupDto.password = this.bcryptService.generateHash(signupDto.password);
 
-      user = await this.userService.createUser(signupDto);
-
-      const { accessToken, refreshToken } = await this.generateTokens(
-        signupDto,
-      );
-    } catch (error) {
-      throw new UserAlreadyExistException();
-    }
+    user = await this.userService.createUser(signupDto);
 
     // connect db return user
     return user;
