@@ -6,7 +6,6 @@ export function UseDto(
   dtoClass: Constructor<BaseDto, [BaseEntity]>,
 ): ClassDecorator {
   return (ctor) => {
-    console.log({ ctor });
     ctor.prototype.dtoClass = dtoClass;
   };
 }

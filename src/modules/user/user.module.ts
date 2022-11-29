@@ -1,5 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PermissionsEntity } from '../../modules/permissions/permission.entity';
+import { RoleEntity } from '../../modules/role/role.entity';
 import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
@@ -18,7 +20,9 @@ export class UserModule {
   static register(data: UserConfigs): DynamicModule {
     return {
       module: UserModule,
-      imports: [TypeOrmModule.forFeature([UserEntity])],
+      imports: [
+        TypeOrmModule.forFeature([UserEntity, RoleEntity, PermissionsEntity]),
+      ],
       exports: [UserService],
       controllers: [UserController],
       providers: [

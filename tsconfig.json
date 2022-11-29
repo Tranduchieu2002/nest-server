@@ -13,11 +13,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "target": "ES2017",
-    "noEmit": false,     // <- remove this or set to false
-    "sourceMap": true,
+  "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./src",
-    "incremental": false,
+    "incremental": true,
     "strictNullChecks": true
   },
   "include": [

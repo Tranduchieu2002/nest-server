@@ -1,12 +1,15 @@
-import { ROLES } from '../constants/roles';
-import { AccessibleSystem } from './accessible';
+import { RoleEnum, ROLES } from '../constants/roles';
+import {
+  generateAdminPermissions,
+  generateUserPermissions,
+} from './permissions';
 
-export const RoleHasPermissions = (roleInstance: ROLES): [] | string[] => {
+export const RoleHasPermissions = (roleInstance: RoleEnum): [] | string[] => {
   switch (roleInstance) {
     case ROLES.ADMIN:
-      return [AccessibleSystem.ACCCESS_ADMIN];
+      return generateAdminPermissions();
     case ROLES.USER:
-      return [];
+      return generateUserPermissions();
     default:
       return [];
   }
