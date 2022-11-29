@@ -7,6 +7,7 @@ import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { PublicStrategy } from './public.strategy';
 import { AuthService } from './services/auth.service';
 import { BcryptService } from './services/bcrypt.service';
 export interface IJwtConfigs {
@@ -44,6 +45,12 @@ export interface IJwtConfigs {
     SharedModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, BcryptService],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    BcryptService,
+    PublicStrategy,
+  ],
 })
 export class AuthModule {}

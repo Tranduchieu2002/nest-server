@@ -1,5 +1,11 @@
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard as NestAuth } from '@nestjs/passport';
 
 export const jwtGuardKey = 'jwt';
 
-export class JwtGuard extends AuthGuard(jwtGuardKey) {}
+export function JwtGuard(options?: Partial<{ isPublic: Boolean }>) {
+  let strategyKeys = jwtGuardKey;
+  if (options?.isPublic) {
+    strategyKeys = 'public';
+  }
+  return NestAuth(strategyKeys);
+}
