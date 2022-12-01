@@ -24,6 +24,7 @@ export class RoleEntity extends BaseEntity {
     type: 'enum',
     enumName: 'user_roles_enum',
     default: RoleEnum.USER,
+    enum: RoleEnum,
   })
   name: RoleEnum;
 

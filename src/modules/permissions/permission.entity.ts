@@ -5,6 +5,7 @@ import { PermissionsDto } from './permission.dto';
 
 interface IPermissionsEntity {
   name: string;
+  model: string;
 }
 
 @Entity({ name: 'permissions' })

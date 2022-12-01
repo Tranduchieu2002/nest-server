@@ -1,6 +1,5 @@
 import { Repository } from 'typeorm';
 import { PermissionsEntity } from '../modules/permissions/permission.entity';
-import { AccessibleSystem } from './accessible';
 
 export enum PermissionAction {
   ANY = '*',
@@ -83,11 +82,21 @@ export const generateAdminPermissions = (
   permissionRepository: Repository<PermissionsEntity>,
 ) => {
   return [
-    AccessibleSystem.ACCCESS_ADMIN,
     generateAnyPermissions('user', permissionRepository),
     generateAnyPermissions('article', permissionRepository),
   ];
 };
+export const generatePermissions = (
+  name: string,
+  modelName: string,
+  permissionRepository: Repository<PermissionsEntity>,
+) => {
+  return permissionRepository.create({
+    name: name.toUpperCase(),
+    model: modelName.toUpperCase(),
+  });
+};
+
 const ArticlesPermissions = {
   name: 'ARTICLE',
   permissions: {

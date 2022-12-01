@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { UserEntity } from 'modules/user/user.entity';
 import { SignInDto } from '../../../dtos/auth/signin.dto';
 import { IJwtConfigs } from '../../../modules/auth/auth.module';
+import { UserDto } from '../../../modules/user/dtos/user.dto';
 import { UserService } from '../../../modules/user/user.service';
 import { AppConfigService } from '../../../shared/services/app-configs.service';
 import { BcryptService } from './bcrypt.service';
@@ -29,7 +30,6 @@ export class AuthService {
         password,
         user.password,
       );
-      console.log({ isValidPassword });
       return user;
     } catch (error) {
       throw new HttpException(
@@ -42,14 +42,11 @@ export class AuthService {
   async registation(signupDto: SignInDto): Promise<UserEntity> {
     // found email
     let user: UserEntity;
-    // const alreadyExist = await this.userService.findByEmail(signupDto.email);
-    // console.log({ alreadyExist });
-    // if (alreadyExist) throw new UserAlreadyExistException();
+
     signupDto.password = this.bcryptService.generateHash(signupDto.password);
 
     user = await this.userService.createUser(signupDto);
 
-    // connect db return user
     return user;
   }
   private async verifyPassword(
@@ -79,21 +76,25 @@ export class AuthService {
     };
   }
 
-  async generateTokens(payload): Promise<
+  async generateTokens(payload: UserDto): Promise<
     {
       refreshToken: string;
       accessToken: string;
     } & IJwtConfigs
   > {
     const { expiresIn, accessToken } = await this.generateAccessToken(payload);
-    const rtExpiresTime = '15d';
+    const rtExpiresTime = '15 days';
     const JWTConfigs: IJwtConfigs = {
       rfExpiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).getTime(), // 15ds
       acExpiresAt: new Date(Date.now() + expiresIn * 1000).getTime(),
     };
-    const generateRfToken = await this.jwtService.signAsync(payload, {
-      expiresIn: rtExpiresTime,
-    });
+
+    const generateRfToken = this.jwtService.sign(
+      { token: this.configService.authConfig.refreshKey },
+      {
+        expiresIn: rtExpiresTime,
+      },
+    );
     return {
       accessToken,
       refreshToken: generateRfToken,
@@ -102,6 +103,26 @@ export class AuthService {
     };
   }
 
+  async generateAccessToken(payload: UserDto): Promise<{
+    accessToken: string;
+    expiresIn: number;
+  }> {
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: this.configService.authConfig.jwtExpirationTime,
+    });
+    return {
+      accessToken,
+      expiresIn: this.configService.authConfig.jwtExpirationTime,
+    };
+  }
+  validateToken(token: string) {
+    return !!this.jwtService.verify(token, {
+      publicKey: this.configService.authConfig.publicKey,
+    });
+  }
+  jwtDecode(token: string) {
+    return this.jwtService.decode(token);
+  }
   setTokenToCookie(
     response: Response,
     accessToken: string,
@@ -120,24 +141,6 @@ export class AuthService {
     response.cookie('RFExpiresDay', rfTokenExpiresDay, {
       expires: rfTokenExpiresDay, // 15ds
       httpOnly: true,
-    });
-  }
-
-  async generateAccessToken(payload): Promise<{
-    accessToken: string;
-    expiresIn: number;
-  }> {
-    const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-    });
-    return {
-      accessToken,
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-    };
-  }
-  validateToken(token: string) {
-    return !!this.jwtService.verify(token, {
-      publicKey: this.configService.authConfig.publicKey,
     });
   }
 }

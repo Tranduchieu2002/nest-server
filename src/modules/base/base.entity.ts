@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +15,7 @@ export interface IAbstractEntity<DTO extends BaseDto, O = never> {
   id: Uuid;
   createdAt: Date;
   updatedAt: Date;
+  status: StatusEnum;
 
   toDto(options?: O): DTO;
 }
@@ -29,7 +31,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   })
   createdAt: Date;
 
-  @Column({
+  @DeleteDateColumn({
     type: 'timestamp',
     default: null,
   })

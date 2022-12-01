@@ -12,10 +12,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { UserDto } from 'modules/user/dtos/user.dto';
+import { UserEntity } from 'modules/user/user.entity';
 import { SignInDto } from '../../dtos/auth/signin.dto';
+import { UserDto } from '../../modules/user/dtos/user.dto';
 import { UserService } from '../../modules/user/user.service';
-import { Auth } from './auth.decorator';
+import { AppConfigService } from '../../shared/services/app-configs.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './services/auth.service';
 
@@ -23,7 +24,8 @@ import { AuthService } from './services/auth.service';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userServicer: UserService,
+    private readonly userService: UserService,
+    private readonly configsService: AppConfigService,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -43,22 +45,14 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   async login(@Req() req: Request) {
     const signInDto = req.body;
-    const user = (await this.userServicer.findByEmail(signInDto.email)).toDto();
+    const user = (await this.userService.findByEmail(signInDto.email)).toDto();
 
-    console.log(user);
     const tokenConfigs = await this.authService.generateTokens({ ...user });
     return {
       message: 'ok',
       user,
       ...tokenConfigs,
     };
-  }
-
-  @Get('me')
-  @HttpCode(HttpStatus.OK)
-  @Auth()
-  me() {
-    return 'ok';
   }
 
   @Get('refresh')
@@ -68,11 +62,13 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const refeshToken = req.query.rf;
-    if (!refeshToken) throw new BadRequestException();
+    const acToken = req.query.ac;
+    if (!refeshToken || !acToken) throw new BadRequestException();
+    const user = this.authService.jwtDecode(acToken as string);
     const isValidToken = this.authService.validateToken(refeshToken as string);
     if (!isValidToken) throw new UnauthorizedException();
     const { accessToken, expirseTime } = await this.authService.refeshToken(
-      req.cookies['user'],
+      JSON.stringify(new UserDto(user as UserEntity)),
     );
     return {
       message: 'ok',
