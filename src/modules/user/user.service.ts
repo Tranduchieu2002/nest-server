@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { generateUserPermissions } from '../../configs/permissions';
 
-import { QueryHandlerNotFoundException } from '@nestjs/cqrs';
 import { RoleEnum } from '../../constants/roles';
 import { SignInDto } from '../../dtos/auth/signin.dto';
 import { BaseService } from '../../modules/base/base.service';
@@ -44,23 +42,15 @@ export class UserService extends BaseService<UserEntity, UserDto> {
   async createUser(userRegisterDto: SignInDto): Promise<UserEntity> {
     const user = this.userRepository.create(userRegisterDto);
 
-    const generatedPermission = generateUserPermissions(
-      this.permissionRepository,
-    );
-
-    const permissions = await this.permissionRepository.insert(
-      generatedPermission,
-    );
-
-    const role = await this.roleRepository.findOne({
+    const permissions = await this.roleRepository.find({
+      relations: {
+        permissions: true,
+      },
       where: {
         name: RoleEnum.USER,
       },
     });
-    if (role === null) throw new QueryHandlerNotFoundException('aa');
-    role.permissions = permissions.generatedMaps as PermissionsEntity[];
-    user.role = [role];
-    this.roleRepository.save(role);
+    user.roles = permissions;
     this.userRepository.save(user);
     return user;
   }

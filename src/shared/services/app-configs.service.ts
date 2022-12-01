@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from '../../snake-naming.strategy';
 
 @Injectable()
 export class AppConfigService {
@@ -22,6 +23,7 @@ export class AppConfigService {
       privateKey: this.getString('JWT_PRIVATE_KEY'),
       publicKey: this.getString('JWT_PUBLIC_KEY'),
       jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
+      refreshKey: this.getString('REFRESH_TOKEN_KEY'),
     };
   }
 
@@ -54,10 +56,10 @@ export class AppConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
       // subscribers: [UserSubscriber],
-      migrationsRun: true,
+      migrationsRun: false,
       synchronize: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
-      // namingStrategy: new SnakeNamingStrategy(),
+      namingStrategy: new SnakeNamingStrategy(),
     };
   }
   get nodeEnv(): string {

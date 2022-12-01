@@ -1,13 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { ROLES } from '../constants/roles';
 
 export class createPermissions1669048572521 implements MigrationInterface {
   name = 'createPermissions1669048572521';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TYPE \"user_roles_enum\" AS ENUM('${ROLES.USER}', '${ROLES.ADMIN}', '${ROLES.SUPER_ADMIN}', '${ROLES.GUEST}')`,
-    );
     await queryRunner.query(`
       CREATE TABLE "roles"
       (

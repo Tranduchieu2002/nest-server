@@ -27,7 +27,6 @@ export const SystemFileUtils = {
     }),
   getConfigs: (fileName: string) => {
     const filePath = nodePath.join(__dirname, `../configs/${fileName}`);
-    console.log(filePath);
     return SystemFileUtils.jsonFileReader(filePath);
   },
 };

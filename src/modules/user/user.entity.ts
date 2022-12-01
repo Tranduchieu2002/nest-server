@@ -31,5 +31,5 @@ export class UserEntity extends BaseEntity<UserDto> implements IUserEntity {
       referencedColumnName: 'id',
     },
   })
-  role: RoleEntity[];
+  roles: RoleEntity[];
 }
