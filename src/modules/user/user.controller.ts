@@ -1,4 +1,11 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+} from '@nestjs/common';
 import { AuthUser } from '../../decorators/auth-user';
 import { AuthDecorators } from '../../decorators/combine-decorators';
 import { UserDto } from './dtos/user.dto';
@@ -13,7 +20,14 @@ export class UserController {
   @AuthDecorators()
   @HttpCode(HttpStatus.OK)
   signIn(@AuthUser() user: UserEntity): UserDto {
-    return user.toDto();
+    return user;
+  }
+
+  @Delete(':id')
+  @AuthDecorators()
+  @HttpCode(HttpStatus.OK)
+  deleteUser(@Param('id') id: string) {
+    return this.userService.softDelete(id as Uuid);
   }
 
   // @Post('create')

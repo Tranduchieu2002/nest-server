@@ -33,8 +33,8 @@ export class UserService extends BaseService<UserEntity, UserDto> {
       .getOne();
   }
 
-  async findByEmail(email: string) {
-    return this.userRepository.findOneByOrFail({
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    return this.userRepository.findOneBy({
       email,
     });
   }
