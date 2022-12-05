@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
   Req,
   Res,
@@ -45,8 +46,9 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   async login(@Req() req: Request) {
     const signInDto = req.body;
-    const user = (await this.userService.findByEmail(signInDto.email)).toDto();
-
+    const user = await this.userService.findByEmail(signInDto.email);
+    if (!user) throw new NotFoundException();
+    user.toDto();
     const tokenConfigs = await this.authService.generateTokens({ ...user });
     return {
       message: 'ok',
