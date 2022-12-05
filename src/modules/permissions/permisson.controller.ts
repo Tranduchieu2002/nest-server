@@ -1,15 +1,17 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { Auth } from '../../modules/auth/auth.decorator';
+import { AuthUser } from '../../decorators/auth-user';
+import { AuthDecorators } from '../../decorators/combine-decorators';
+import { UserDto } from '../../modules/user/dtos/user.dto';
 import { PermissionsSevice } from './permisson.service';
 
-@Controller('permissons')
+@Controller('permissions')
 export class PermissionsController {
   constructor(private readonly permissionSevice: PermissionsSevice) {}
 
-  @Auth()
+  @AuthDecorators()
   @Get('')
   @HttpCode(HttpStatus.OK)
-  getPermissions() {
-    return this.permissionSevice.generatePermissions();
+  getPermissions(@AuthUser() user: UserDto) {
+    return this.permissionSevice.generatePermissions(user);
   }
 }

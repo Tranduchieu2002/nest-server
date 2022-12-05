@@ -12,7 +12,6 @@
       "CREATE_CATEGORY",
       "CREATE_COMMENT",
       "READ_ARTICLE"
-
     ]
   }
 ]
