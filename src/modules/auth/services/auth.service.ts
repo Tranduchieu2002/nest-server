@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { UserEntity } from 'modules/user/user.entity';
 import { SignInDto } from '../../../dtos/auth/signin.dto';
+import { UserAlreadyExistException } from '../../../exceptions/exist-email';
 import { IJwtConfigs } from '../../../modules/auth/auth.module';
 import { UserDto } from '../../../modules/user/dtos/user.dto';
+import { UserEntity } from '../../../modules/user/user.entity';
 import { UserService } from '../../../modules/user/user.service';
 import { AppConfigService } from '../../../shared/services/app-configs.service';
 import { BcryptService } from './bcrypt.service';
@@ -30,7 +31,7 @@ export class AuthService {
         password,
         user.password,
       );
-      return user;
+      return isValidPassword;
     } catch (error) {
       throw new HttpException(
         "User and password doesn't match",
@@ -42,7 +43,10 @@ export class AuthService {
   async registation(signupDto: SignInDto): Promise<UserEntity> {
     // found email
     let user: UserEntity;
-
+    if (signupDto.email) {
+      const isExistUser = await this.userService.findByEmail(signupDto.email);
+      if (isExistUser) throw new UserAlreadyExistException();
+    }
     signupDto.password = this.bcryptService.generateHash(signupDto.password);
 
     user = await this.userService.createUser(signupDto);
