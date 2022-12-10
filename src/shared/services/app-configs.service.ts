@@ -27,6 +27,10 @@ export class AppConfigService {
     };
   }
 
+  get enableDocuments() {
+    return this.getBoolean('ENABLE_DOCUMENTATION');
+  }
+
   get appConfig() {
     return {
       port: this.getString('PORT'),
