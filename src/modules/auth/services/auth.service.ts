@@ -90,7 +90,7 @@ export class AuthService {
     const rtExpiresTime = '15 days';
     const JWTConfigs: IJwtConfigs = {
       rfExpiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).getTime(), // 15ds
-      acExpiresAt: new Date(Date.now() + expiresIn * 1000).getTime(),
+      expiresIn,
     };
 
     const generateRfToken = this.jwtService.sign(
@@ -102,7 +102,6 @@ export class AuthService {
     return {
       accessToken,
       refreshToken: generateRfToken,
-      expiresIn,
       ...JWTConfigs,
     };
   }
