@@ -12,12 +12,16 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOkResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { UserEntity } from 'modules/user/user.entity';
+import { AuthDecorators } from '../../decorators/combine-decorators';
 import { SignInDto } from '../../dtos/auth/signin.dto';
 import { UserDto } from '../../modules/user/dtos/user.dto';
 import { UserService } from '../../modules/user/user.service';
 import { AppConfigService } from '../../shared/services/app-configs.service';
+import { LoginPayloadDto } from './dto/signin.dto';
+import { UserLoginDto } from './dto/user-login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './services/auth.service';
 
@@ -41,23 +45,24 @@ export class AuthController {
     return user.toDto();
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Req() req: Request) {
-    const signInDto = req.body;
-    const user = await this.userService.findByEmail(signInDto.email);
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: LoginPayloadDto,
+    description: 'User info with access token',
+  })
+  async login(@Body() userLogin: UserLoginDto): Promise<LoginPayloadDto> {
+    const user = await this.userService.findByEmail(userLogin.email);
     if (!user) throw new NotFoundException();
     user.toDto();
     const tokenConfigs = await this.authService.generateTokens({ ...user });
-    return {
-      message: 'ok',
-      user,
-      ...tokenConfigs,
-    };
+
+    return new LoginPayloadDto(user, tokenConfigs);
   }
 
   @Get('refresh')
+  @AuthDecorators()
   @HttpCode(HttpStatus.OK)
   async refresh(
     @Req() req: Request,

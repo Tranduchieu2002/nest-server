@@ -12,8 +12,7 @@ import { AuthService } from './services/auth.service';
 import { BcryptService } from './services/bcrypt.service';
 export interface IJwtConfigs {
   rfExpiresAt: number;
-  acExpiresAt: number;
-  expiresIn?: number;
+  expiresIn: number;
 }
 
 @Module({
