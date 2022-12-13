@@ -21,10 +21,10 @@ export class AppInitialization {
       isGlobal: true,
     });
     this.setup();
-    this.migations();
+    this.migrations();
     await this.app.listen(3000);
   }
-  migations() {
+  migrations() {
     dataSource
       .initialize()
       .then(() => {
