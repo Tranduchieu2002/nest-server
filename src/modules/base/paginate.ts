@@ -1,10 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
 import { Order } from '../../constants';
-import {
-  ApiEnumProperty,
-  NumberField,
-} from '../../decorators/properties.decorator';
+import { NumberOptionalField } from '../../decorators/api-field.decorator';
+import { ApiEnumProperty } from '../../decorators/properties.decorator';
 
 interface IPageMetaDtoParameters {
   pageOptions: PageOptionsDto;
@@ -19,16 +17,14 @@ export class PageOptionsDto {
   })
   readonly order: Order = Order.ASC;
 
-  @IsOptional()
-  @NumberField({
+  @NumberOptionalField({
     minimum: 1,
     default: 1,
     int: true,
   })
   readonly page: number = 1;
 
-  @IsOptional()
-  @NumberField({
+  @NumberOptionalField({
     minimum: 1,
     maximum: 50,
     default: 10,
