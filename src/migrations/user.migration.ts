@@ -5,19 +5,18 @@ export class CreateUsersTable1622299665807 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      "CREATE TYPE \"users_role_enum\" AS ENUM('USER', 'ADMIN')",
+      "CREATE TYPE \"status_enum\" AS ENUM('ACTIVE', 'INACTIVE')",
     );
     await queryRunner.query(`
       CREATE TABLE "users"
       (
-        "id"         uuid              NOT NULL DEFAULT uuid_generate_v4(),
+        "id"         uuid             NOT NULL DEFAULT uuid_generate_v4(),
         "createdAt" TIMESTAMP         NOT NULL DEFAULT now(),
         "updatedAt" TIMESTAMP         NOT NULL DEFAULT now(),
-        "deletedAt" TIMESTAMP         NOT NULL DEFAULT now(),
-        "role"       "users_role_enum" NOT NULL DEFAULT 'USER',
-        "isPublished" boolean         NOT NULL DEFAULT true,
-        "email"      character varying,
-        "password"   character varying,
+        "deletedAt" TIMESTAMP         DEFAULT null,
+        "status"    "status_enum"     NOT NULL DEFAULT 'ACTIVE',
+        "email"     character varying,
+        "password"  character varying,
         CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"),
         CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id")
       )`);
@@ -25,6 +24,5 @@ export class CreateUsersTable1622299665807 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('DROP TABLE "users"');
-    await queryRunner.query('DROP TYPE "users_role_enum"');
   }
 }

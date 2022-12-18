@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { UserEntity } from 'modules/user/user.entity';
 import { SignInDto } from '../../../dtos/auth/signin.dto';
 import { UserAlreadyExistException } from '../../../exceptions/exist-email';
 import { IJwtConfigs } from '../../../modules/auth/auth.module';
+import { UserDto } from '../../../modules/user/dtos/user.dto';
+import { UserEntity } from '../../../modules/user/user.entity';
 import { UserService } from '../../../modules/user/user.service';
 import { AppConfigService } from '../../../shared/services/app-configs.service';
 import { BcryptService } from './bcrypt.service';
@@ -30,8 +31,7 @@ export class AuthService {
         password,
         user.password,
       );
-      console.log({ isValidPassword });
-      return user;
+      return isValidPassword;
     } catch (error) {
       throw new HttpException(
         "User and password doesn't match",
@@ -43,22 +43,14 @@ export class AuthService {
   async registation(signupDto: SignInDto): Promise<UserEntity> {
     // found email
     let user: UserEntity;
-    try {
-      // const alreadyExist = await this.userService.findByEmail(signupDto.email);
-      // console.log({ alreadyExist });
-      // if (alreadyExist) throw new UserAlreadyExistException();
-      signupDto.password = this.bcryptService.generateHash(signupDto.password);
-
-      user = await this.userService.createUser(signupDto);
-
-      const { accessToken, refreshToken } = await this.generateTokens(
-        signupDto,
-      );
-    } catch (error) {
-      throw new UserAlreadyExistException();
+    if (signupDto.email) {
+      const isExistUser = await this.userService.findByEmail(signupDto.email);
+      if (isExistUser) throw new UserAlreadyExistException();
     }
+    signupDto.password = this.bcryptService.generateHash(signupDto.password);
 
-    // connect db return user
+    user = await this.userService.createUser(signupDto);
+
     return user;
   }
   private async verifyPassword(
@@ -78,7 +70,9 @@ export class AuthService {
     return !!isPasswordMatching;
   }
   async refeshToken(payload) {
-    const { accessToken, expiresIn } = await this.generateAccessToken(payload);
+    const { accessToken, expiresIn } = await this.generateAccessToken(
+      JSON.parse(payload),
+    );
     return {
       expirseTime: new Date(Date.now() + /* 15 * */ 60 * 1000),
       accessToken,
@@ -86,29 +80,52 @@ export class AuthService {
     };
   }
 
-  async generateTokens(payload): Promise<
+  async generateTokens(payload: UserDto): Promise<
     {
       refreshToken: string;
       accessToken: string;
     } & IJwtConfigs
   > {
     const { expiresIn, accessToken } = await this.generateAccessToken(payload);
-    const rtExpiresTime = '15d';
+    const rtExpiresTime = '15 days';
     const JWTConfigs: IJwtConfigs = {
       rfExpiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).getTime(), // 15ds
-      acExpiresAt: new Date(Date.now() + expiresIn * 1000).getTime(),
+      expiresIn,
     };
-    const generateRfToken = await this.jwtService.signAsync(payload, {
-      expiresIn: rtExpiresTime,
-    });
+
+    const generateRfToken = this.jwtService.sign(
+      { token: this.configService.authConfig.refreshKey },
+      {
+        expiresIn: rtExpiresTime,
+      },
+    );
     return {
       accessToken,
       refreshToken: generateRfToken,
-      expiresIn,
       ...JWTConfigs,
     };
   }
 
+  async generateAccessToken(payload: UserDto): Promise<{
+    accessToken: string;
+    expiresIn: number;
+  }> {
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: this.configService.authConfig.jwtExpirationTime,
+    });
+    return {
+      accessToken,
+      expiresIn: this.configService.authConfig.jwtExpirationTime,
+    };
+  }
+  validateToken(token: string) {
+    return !!this.jwtService.verify(token, {
+      publicKey: this.configService.authConfig.publicKey,
+    });
+  }
+  jwtDecode(token: string) {
+    return this.jwtService.decode(token);
+  }
   setTokenToCookie(
     response: Response,
     accessToken: string,
@@ -127,24 +144,6 @@ export class AuthService {
     response.cookie('RFExpiresDay', rfTokenExpiresDay, {
       expires: rfTokenExpiresDay, // 15ds
       httpOnly: true,
-    });
-  }
-
-  async generateAccessToken(payload): Promise<{
-    accessToken: string;
-    expiresIn: number;
-  }> {
-    const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-    });
-    return {
-      accessToken,
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-    };
-  }
-  validateToken(token: string) {
-    return !!this.jwtService.verify(token, {
-      publicKey: this.configService.authConfig.publicKey,
     });
   }
 }

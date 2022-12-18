@@ -1,19 +1,27 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
   Req,
   Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOkResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { UserDto } from 'modules/user/dtos/user.dto';
+import { UserEntity } from 'modules/user/user.entity';
+import { AuthDecorators } from '../../decorators/combine-decorators';
 import { SignInDto } from '../../dtos/auth/signin.dto';
+import { UserDto } from '../../modules/user/dtos/user.dto';
 import { UserService } from '../../modules/user/user.service';
+import { AppConfigService } from '../../shared/services/app-configs.service';
+import { LoginPayloadDto } from './dto/signin.dto';
+import { UserLoginDto } from './dto/user-login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './services/auth.service';
 
@@ -21,7 +29,8 @@ import { AuthService } from './services/auth.service';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userSevicer: UserService,
+    private readonly userService: UserService,
+    private readonly configsService: AppConfigService,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -36,28 +45,37 @@ export class AuthController {
     return user.toDto();
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Req() req: Request) {
-    const signInDto = req.body;
-    const tokenConfigs = await this.authService.generateTokens(signInDto);
-    return {
-      message: 'ok',
-      ...tokenConfigs,
-    };
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: LoginPayloadDto,
+    description: 'User info with access token',
+  })
+  async login(@Body() userLogin: UserLoginDto): Promise<LoginPayloadDto> {
+    const user = await this.userService.findByEmail(userLogin.email);
+    if (!user) throw new NotFoundException();
+    user.toDto();
+    const tokenConfigs = await this.authService.generateTokens({ ...user });
+
+    return new LoginPayloadDto(user, tokenConfigs);
   }
 
   @Get('refresh')
+  @AuthDecorators()
   @HttpCode(HttpStatus.OK)
   async refresh(
     @Req() req: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const isValidToken = this.authService.validateToken(req.cookies['RF']);
+    const refeshToken = req.query.rf;
+    const acToken = req.query.ac;
+    if (!refeshToken || !acToken) throw new BadRequestException();
+    const user = this.authService.jwtDecode(acToken as string);
+    const isValidToken = this.authService.validateToken(refeshToken as string);
     if (!isValidToken) throw new UnauthorizedException();
     const { accessToken, expirseTime } = await this.authService.refeshToken(
-      req.cookies['user'],
+      JSON.stringify(new UserDto(user as UserEntity)),
     );
     return {
       message: 'ok',

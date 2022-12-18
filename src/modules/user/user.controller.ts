@@ -1,19 +1,42 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { ROLES } from '../../constants/roles';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Query,
+} from '@nestjs/common';
+import { AuthUser } from '../../decorators/auth-user';
 import { AuthDecorators } from '../../decorators/combine-decorators';
+import { PageOptionsDto } from '../../modules/base/paginate';
+import { UserDto } from './dtos/user.dto';
+import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('me')
-  @AuthDecorators([ROLES.ADMIN, ROLES.USER])
+  @AuthDecorators()
   @HttpCode(HttpStatus.OK)
-  signIn() {
-    return {
-      message: 'successed',
-    };
+  signIn(@AuthUser() user: UserEntity): UserDto {
+    return user;
+  }
+
+  @Delete(':id')
+  @AuthDecorators()
+  @HttpCode(HttpStatus.OK)
+  deleteUser(@Param('id') id: string) {
+    return this.userService.softDelete(id as Uuid);
+  }
+
+  @Get()
+  @AuthDecorators()
+  @HttpCode(HttpStatus.OK)
+  getUsers(@Query() pageOptions: PageOptionsDto) {
+    return this.userService.getMany(pageOptions);
   }
 
   // @Post('create')

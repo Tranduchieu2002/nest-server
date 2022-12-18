@@ -1,10 +1,11 @@
-import { Constructor } from 'modules/user/user.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Constructor } from 'types';
 import { BaseDto } from './base.dto';
 
 declare global {
@@ -14,6 +15,7 @@ export interface IAbstractEntity<DTO extends BaseDto, O = never> {
   id: Uuid;
   createdAt: Date;
   updatedAt: Date;
+  status: StatusEnum;
 
   toDto(options?: O): DTO;
 }
@@ -29,7 +31,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   })
   createdAt: Date;
 
-  @Column({
+  @DeleteDateColumn({
     type: 'timestamp',
     default: null,
   })
@@ -45,7 +47,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
     type: 'boolean',
     default: true,
   })
-  isPublished: boolean;
+  status: StatusEnum;
 
   private dtoClass?: Constructor<Dto, [BaseEntity, O?]>;
 
@@ -63,4 +65,9 @@ export interface IBaseEntity<DTO extends BaseDto, O = never> {
   createdAt: Date;
   updatedAt: Date;
   deleteAt?: Date;
+}
+
+export enum StatusEnum {
+  Active = 'ACTIVE',
+  InActive = 'INACTIVE',
 }
