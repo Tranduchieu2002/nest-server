@@ -16,6 +16,7 @@ services:
     container_name: postgres-database
     restart: always
     environment:
+      POSTGRES_USER: "$DB_USERNAME"
       POSTGRES_PASSWORD: "$DB_PASSWORD"
       TZ: 'GMT'
       PGTZ: 'GMT'

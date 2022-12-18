@@ -17,7 +17,7 @@ export class AppInitialization {
     this.app = await NestFactory.create(AppModule);
     this.configService = this.app.select(SharedModule).get(AppConfigService);
     ConfigModule.forRoot({
-      envFilePath: '.env.devlopment',
+      envFilePath: '.env',
       isGlobal: true,
     });
     this.setup();
