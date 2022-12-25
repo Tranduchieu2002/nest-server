@@ -16,6 +16,7 @@ services:
     container_name: postgres-database
     restart: always
     environment:
+      POSTGRES_DB: "$DB_DATABASE"
       POSTGRES_USER: "$DB_USERNAME"
       POSTGRES_PASSWORD: "$DB_PASSWORD"
       TZ: 'GMT'
@@ -37,7 +38,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - /data/pgadmin:/root/.pgadmin
+      - /var/lib/pgadmin:/var/lib/pgadmin
     env_file:
       - .env
     links:
