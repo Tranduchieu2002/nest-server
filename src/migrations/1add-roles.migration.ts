@@ -2,6 +2,7 @@ import { QueryRunner } from 'typeorm';
 import { SystemFileUtils } from '../helpers/read-files';
 import { PermissionsEntity } from '../modules/permissions/permission.entity';
 import { RoleEntity } from '../modules/role/role.entity';
+import { RoleService } from '../modules/role/role.service';
 
 export class CreateRoles {
   name = 'createRoles1669048572521';
@@ -14,25 +15,11 @@ export class CreateRoles {
 
     const roleRepository = queryRunner.manager.getRepository(RoleEntity);
     const permissionRepository =
-      queryRunner.manager.getRepository(PermissionsEntity);
+    queryRunner.manager.getRepository(PermissionsEntity);
+    const roleService = new RoleService(roleRepository, permissionRepository)
     for (const role of defaultPermissions) {
-      const roleInstance = roleRepository.create({
-        name: role.name,
-      });
       const permissions: string[] = role.permissions;
-      let rolePermissions: any = [];
-
-      for (const permission of permissions) {
-        const permisisonAfterSave = permissionRepository.create({
-          name: permission,
-          model: role.name,
-        });
-        rolePermissions.push(permisisonAfterSave);
-      }
-      rolePermissions = await permissionRepository.save(rolePermissions);
-      roleInstance.permissions = rolePermissions;
-      console.log(roleInstance);
-      await roleRepository.save(roleInstance);
+      await roleService.createRoleWithPermissions(role.name, permissions)
     }
   }
   public async down(queryRunner: QueryRunner): Promise<void> {

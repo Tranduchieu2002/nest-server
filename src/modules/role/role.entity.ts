@@ -1,21 +1,9 @@
-import { IsString } from 'class-validator';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { RoleEnum } from '../../constants/roles';
 import { UseDto } from '../../decorators/useDto.decorator';
-import { BaseDto } from '../../modules/base/base.dto';
 import { BaseEntity } from '../../modules/base/base.entity';
 import { PermissionsEntity } from '../permissions/permission.entity';
-
-export class RoleDto extends BaseDto {
-  @IsString()
-  name: string;
-  constructor(roleE: RoleEntity) {
-    super(roleE, {
-      excludeFields: true,
-    });
-    this.name = roleE.name;
-  }
-}
+import { RoleDto } from './role.dto';
 
 @Entity('roles')
 @UseDto(RoleDto)
@@ -42,3 +30,5 @@ export class RoleEntity extends BaseEntity {
   })
   permissions: PermissionsEntity[];
 }
+export { RoleDto };
+

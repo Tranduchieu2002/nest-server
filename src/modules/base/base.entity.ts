@@ -1,3 +1,4 @@
+import { Constructor } from '@/types';
 import {
   Column,
   CreateDateColumn,
@@ -5,12 +6,18 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Constructor } from 'types';
 import { BaseDto } from './base.dto';
 
 declare global {
   export type Uuid = string & { _uuidBrand: undefined };
 }
+
+export enum StatusEnum {
+  Active = 'ACTIVE',
+  InActive = 'INACTIVE',
+  Publish = 'PUBLISH'
+}
+
 export interface IAbstractEntity<DTO extends BaseDto, O = never> {
   id: Uuid;
   createdAt: Date;
@@ -44,8 +51,10 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   updatedAt: Date;
 
   @Column({
-    type: 'boolean',
-    default: true,
+    type: 'enum',
+    enum: StatusEnum,
+    default: StatusEnum.Active,
+    name: 'status_enum'
   })
   status: StatusEnum;
 
@@ -67,7 +76,3 @@ export interface IBaseEntity<DTO extends BaseDto, O = never> {
   deleteAt?: Date;
 }
 
-export enum StatusEnum {
-  Active = 'ACTIVE',
-  InActive = 'INACTIVE',
-}

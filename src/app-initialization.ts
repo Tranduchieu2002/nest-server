@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { dataSource } from './data-source/postgresql.datasouce';
 import { CreateRoles } from './migrations/1add-roles.migration';
+import { CreateAdmin1671965390378 } from './migrations/create-admin.migration';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { SharedModule } from './shared/shared.module';
 
@@ -30,6 +31,7 @@ export class AppInitialization {
       .then(() => {
         console.log('Data Source has been initialized successfully.');
         new CreateRoles().up(dataSource.createQueryRunner('master'));
+        new CreateAdmin1671965390378().up(dataSource.createQueryRunner('master'))
       })
       .catch((err) => {
         console.error('Error during Data Source initialization:', err);

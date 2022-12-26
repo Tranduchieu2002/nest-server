@@ -12,6 +12,7 @@ module.exports = {
     sourceType: 'module',
   },
   extends: [
+    'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:prettier/recommended',
     'eslint:recommended',
@@ -52,6 +53,37 @@ module.exports = {
     /**
      * plugin:simple-import-sort
      */
+    "import/order": [
+      2,
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "sibling",
+          "parent",
+          "index",
+          "object",
+          "type"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "@/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ]
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "warn",
+      {
+        "devDependencies": false,
+        "optionalDependencies": false,
+        "packageDir": "./"
+      }
+    ],
+
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     /**

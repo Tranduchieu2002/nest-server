@@ -13,11 +13,14 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "target": "ES2017",
-  "sourceMap": true,
+    "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "incremental": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "paths": {
+      "@/*": ["./src/*"],
+    }
   },
   "include": [
     "src/**/*"

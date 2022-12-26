@@ -1,3 +1,4 @@
+import { StringField } from '@/decorators/api-field.decorator';
 import { plainToInstance } from 'class-transformer';
 import { IsString } from 'class-validator';
 import { BaseDto } from '../../../modules/base/base.dto';
@@ -11,11 +12,15 @@ export class UserDto extends BaseDto {
 
   @IsString()
   password?: string;
+  
+  @IsString()
+  name: string;
 
   roles: RoleEntity[];
   constructor(user: UserEntity, options?: UserDtoOptions) {
     super(user);
     this.email = user.email;
+    this.name = user.name;
   }
   static plainToClass<T>(instance: new (...args: any[]) => T, object: T): T {
     return plainToInstance(instance, object, {

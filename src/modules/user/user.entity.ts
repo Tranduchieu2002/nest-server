@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+  import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { UseDto } from '../../decorators/useDto.decorator';
 import { RoleEntity } from '../../modules/role/role.entity';
 import { BaseEntity, IBaseEntity } from '../base/base.entity';
@@ -6,7 +6,7 @@ import { UserDto } from './dtos/user.dto';
 
 export interface IUserEntity extends IBaseEntity<UserDto> {
   email?: string;
-
+  name: string;
   password?: string;
 }
 
@@ -18,6 +18,9 @@ export class UserEntity extends BaseEntity<UserDto> implements IUserEntity {
 
   @Column({ nullable: true })
   password: string;
+  
+  @Column({nullable: false})
+  name: string
 
   @ManyToMany(() => RoleEntity)
   @JoinTable({

@@ -21,6 +21,7 @@ export class PermissionsEntity
 
   @Column({
     type: 'varchar',
+    default: ''
   })
   model: string;
 }

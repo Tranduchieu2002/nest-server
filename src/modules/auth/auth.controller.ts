@@ -14,12 +14,12 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { UserEntity } from 'modules/user/user.entity';
 import { AuthDecorators } from '../../decorators/combine-decorators';
 import { SignInDto } from '../../dtos/auth/signin.dto';
 import { UserDto } from '../../modules/user/dtos/user.dto';
 import { UserService } from '../../modules/user/user.service';
 import { AppConfigService } from '../../shared/services/app-configs.service';
+import { UserEntity } from '../user/user.entity';
 import { LoginPayloadDto } from './dto/signin.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
