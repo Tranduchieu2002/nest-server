@@ -1,8 +1,8 @@
 import { QueryRunner } from 'typeorm';
-import { SystemFileUtils } from '../helpers/read-files';
-import { PermissionsEntity } from '../modules/permissions/permission.entity';
-import { RoleEntity } from '../modules/role/role.entity';
-import { RoleService } from '../modules/role/role.service';
+import { SystemFileUtils } from '../read-files';
+import { PermissionsEntity } from '../../modules/permissions/permission.entity';
+import { RoleEntity } from '../../modules/role/role.entity';
+import { RoleService } from '../../modules/role/role.service';
 
 export class CreateRoles {
   name = 'createRoles1669048572521';

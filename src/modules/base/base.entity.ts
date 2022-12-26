@@ -54,7 +54,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
     type: 'enum',
     enum: StatusEnum,
     default: StatusEnum.Active,
-    name: 'status_enum'
+    enumName: "status_enum"
   })
   status: StatusEnum;
 

@@ -60,8 +60,8 @@ export class AppConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
       // subscribers: [UserSubscriber],
-      migrationsRun: false,
-      synchronize: true,
+      migrationsRun: true,
+      synchronize: false,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
       namingStrategy: new SnakeNamingStrategy(),
     };

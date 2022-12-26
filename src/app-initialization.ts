@@ -6,8 +6,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { dataSource } from './data-source/postgresql.datasouce';
-import { CreateRoles } from './migrations/1add-roles.migration';
-import { CreateAdmin1671965390378 } from './migrations/create-admin.migration';
+import { CreateRoles } from './helpers/system/add-roles-system';
+import { CreateAdmin1671965390378 } from './helpers/system/create-admin-system';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { SharedModule } from './shared/shared.module';
 
