@@ -10,6 +10,7 @@
     "build": "nest build",
     "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
     "build:prod": "tsc -p tsconfig.build.json",
+    "preinstall": "npx only-allow pnpm",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "ts-node src/main.ts",
@@ -46,6 +47,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
+    "dotenv-extended": "^2.9.0",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "passport": "^0.6.0",
@@ -57,7 +59,8 @@
     "rxjs": "^7.2.0",
     "ts-node-dev": "^2.0.0",
     "typeorm": "^0.3.10",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "webpack": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

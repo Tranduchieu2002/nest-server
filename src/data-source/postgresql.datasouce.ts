@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 import '../q-builder.polyfill';
 import { SnakeNamingStrategy } from '../snake-naming.strategy';
-dotenv.config();
 
 export const dataSource = new DataSource({
   type: 'postgres',
