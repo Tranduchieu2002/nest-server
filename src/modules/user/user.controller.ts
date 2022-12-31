@@ -7,7 +7,7 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
-import { AuthUser } from '../../decorators/auth-user';
+import { AuthUser } from '../../decorators';
 import { AuthDecorators } from '../../decorators/combine-decorators';
 import { PageOptionsDto } from '../../modules/base/paginate';
 import { UserDto } from './dtos/user.dto';

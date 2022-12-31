@@ -1,6 +1,6 @@
+import { Order } from '@server/constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
-import { Order } from '../../constants';
 import { NumberOptionalField } from '../../decorators/api-field.decorator';
 import { ApiEnumProperty } from '../../decorators/properties.decorator';
 

@@ -1,18 +1,22 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   Contains,
   IsEmail,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
+  IsString,
   Length,
   Max,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
-import { isNumber } from 'lodash';
+import { isArray, isNumber, map, trim } from 'lodash';
 import { ToArray } from './properties.decorator';
 
 interface INumberFieldOptions {
@@ -29,6 +33,8 @@ interface IStringFieldOptions {
   contains?: string;
   isEmail?: boolean;
   swagger?: boolean;
+  min?: number;
+  max?: number;
 }
 
 export function NumberField(
@@ -78,21 +84,40 @@ export function NumberOptionalField(
 }
 
 export function StringField(
-  options: Omit<ApiPropertyOptions, 'type' | 'require'> & IStringFieldOptions,
-) {
-  const { length, swagger, contains, isEmail } = options;
-  const decorators = [Type(() => Number)];
+  options: Omit<ApiPropertyOptions, 'type' | 'require'> & IStringFieldOptions = {},
+): PropertyDecorator {
+  const { length, swagger, contains, isEmail, min , max } = options;
+  const decorators = [IsNotEmpty(), IsString(), Trim()];
   if (options.length) {
     decorators.push(Length(0, length));
   }
   if (contains) {
     decorators.push(Contains(contains));
   }
+  if(min) {
+    decorators.push(MinLength(min));
+  }
+  if(max) {
+    decorators.push(MaxLength(max));
+  }
   if (swagger) {
     decorators.push(ApiProperty(options));
   }
   if (isEmail) {
-    decorators.push(IsEmail({}));
+    decorators.push(IsEmail());
   }
   return applyDecorators(...decorators);
+}
+
+
+export function Trim(): PropertyDecorator {
+  return Transform((params) => {
+    const value = params.value as string[] | string;
+
+    if (isArray(value)) {
+      return map(value, (v) => trim(v).replace(/\s\s+/g, ' '));
+    }
+
+    return trim(value).replace(/\s\s+/g, ' ');
+  });
 }

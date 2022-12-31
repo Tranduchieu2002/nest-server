@@ -4,7 +4,7 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { PageOptionsDto, Pagination } from '../../modules/base/paginate';
 
 import { RoleEnum } from '../../constants/roles';
-import { SignInDto } from '../../dtos/auth/signin.dto';
+import { SignUpDto } from '../../dtos/auth/signin.dto';
 import { BaseService } from '../../modules/base/base.service';
 import { PermissionsEntity } from '../../modules/permissions/permission.entity';
 import { RoleEntity } from '../../modules/role/role.entity';
@@ -40,7 +40,7 @@ export class UserService extends BaseService<UserEntity, UserDto> {
     });
   }
 
-  async createUser(userRegisterDto: SignInDto): Promise<UserEntity> {
+  async createUser(userRegisterDto: SignUpDto): Promise<UserEntity> {
     const user = this.userRepository.create(userRegisterDto);
     const permissions = await this.roleRepository.find({
       relations: {

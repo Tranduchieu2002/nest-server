@@ -2,25 +2,23 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
   Post,
-  Req,
   Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AuthDecorators } from '../../decorators/combine-decorators';
-import { SignInDto } from '../../dtos/auth/signin.dto';
+import { SignUpDto } from '../../dtos/auth/signin.dto';
 import { UserDto } from '../../modules/user/dtos/user.dto';
 import { UserService } from '../../modules/user/user.service';
 import { AppConfigService } from '../../shared/services/app-configs.service';
 import { UserEntity } from '../user/user.entity';
-import { LoginPayloadDto } from './dto/signin.dto';
+import { LoginPayloadDto, RefreshTokenPayloadDto, RefreshTokenResponseDto } from './dto/signin.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './services/auth.service';
@@ -35,12 +33,13 @@ export class AuthController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
-  async signUp(@Body() userRegisterDto: SignInDto): Promise<UserDto> {
-    const signInDto: SignInDto = userRegisterDto;
+  async signUp(@Body() userRegisterDto: SignUpDto): Promise<UserDto> {
+    const SignUpDto: SignUpDto = userRegisterDto;
     const user = await this.authService.registation({
-      email: signInDto.email,
-      password: String(signInDto.password),
+      email: SignUpDto.email,
+      password: String(SignUpDto.password),
       remember: false,
+      name: String(SignUpDto.name)
     });
     return user.toDto();
   }
@@ -57,19 +56,23 @@ export class AuthController {
     if (!user) throw new NotFoundException();
     user.toDto();
     const tokenConfigs = await this.authService.generateTokens({ ...user });
-
     return new LoginPayloadDto(user, tokenConfigs);
   }
 
-  @Get('refresh')
+
+  @Post('refresh')
   @AuthDecorators()
+  @ApiOkResponse({
+    type: RefreshTokenResponseDto,
+    description: "Get accessToken by refreshToken",
+  })
   @HttpCode(HttpStatus.OK)
   async refresh(
-    @Req() req: Request,
+    @Body() body: RefreshTokenPayloadDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refeshToken = req.query.rf;
-    const acToken = req.query.ac;
+    const refeshToken = body?.access_token;
+    const acToken = body?.refresh_token;
     if (!refeshToken || !acToken) throw new BadRequestException();
     const user = this.authService.jwtDecode(acToken as string);
     const isValidToken = this.authService.validateToken(refeshToken as string);
@@ -77,10 +80,10 @@ export class AuthController {
     const { accessToken, expirseTime } = await this.authService.refeshToken(
       JSON.stringify(new UserDto(user as UserEntity)),
     );
-    return {
+    return new RefreshTokenResponseDto({
       message: 'ok',
-      accessToken,
+      access_token: accessToken,
       expirseTime,
-    };
+    })
   }
 }

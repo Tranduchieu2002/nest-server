@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { SignInDto } from '../../../dtos/auth/signin.dto';
+import { SignUpDto } from '../../../dtos/auth/signin.dto';
 import { UserAlreadyExistException } from '../../../exceptions/exist-email';
 import { IJwtConfigs } from '../../../modules/auth/auth.module';
 import { UserDto } from '../../../modules/user/dtos/user.dto';
@@ -40,7 +40,7 @@ export class AuthService {
     }
   }
 
-  async registation(signupDto: SignInDto): Promise<UserEntity> {
+  async registation(signupDto: SignUpDto): Promise<UserEntity> {
     // found email
     let user: UserEntity;
     if (signupDto.email) {

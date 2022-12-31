@@ -16,7 +16,7 @@ export class BaseService<Entity extends BaseEntity, dto> {
   async findOneById(id: Uuid): Promise<Entity> {
     const queryBuilder = await this.baseRepository.findOneBy({ id: id as any });
     if (!queryBuilder) {
-      throw new PostNotFoundException();
+      throw new PostNotFoundException("Cannot found user");
     }
     return queryBuilder;
   }
