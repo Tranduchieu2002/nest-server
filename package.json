@@ -31,7 +31,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@server/constants": "workspace:*",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
@@ -41,6 +40,8 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",
+    "@server/constants": "workspace:*",
+    "@server/utils": "workspace:*",
     "@types/lodash": "^4.14.191",
     "@types/passport-jwt": "^3.0.7",
     "bcrypt": "5.0.1",
@@ -61,12 +62,16 @@
     "ts-node-dev": "^2.0.0",
     "typeorm": "^0.3.10",
     "uuid": "^9.0.0",
-    "webpack": "^5.0.0"
+    "webpack": "^5.0.0",
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
+    "@pnpm/find-workspace-packages": "^5.0.18",
+    "@pnpm/logger": "^5.0.0",
+    "@pnpm/types": "^8.10.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.5",
@@ -77,9 +82,6 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "@pnpm/find-workspace-packages": "^5.0.18",
-    "@pnpm/logger": "^5.0.0",
-    "@pnpm/types": "^8.10.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.26.0",

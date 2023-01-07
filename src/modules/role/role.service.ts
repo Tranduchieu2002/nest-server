@@ -7,7 +7,7 @@ import { PermissionsEntity } from "../permissions/permission.entity";
 import { RoleDto, RoleEntity } from "./role.entity";
 
 @Injectable()
-export class RoleService extends BaseService<RoleEntity, {}> {
+export class RoleService extends BaseService<RoleEntity, RoleDto> {
   constructor(
     private readonly roleRepository: Repository<RoleEntity>,
     private readonly permissionRepository: Repository<PermissionsEntity>){

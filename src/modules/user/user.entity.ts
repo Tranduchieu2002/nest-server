@@ -8,6 +8,7 @@ export interface IUserEntity extends IBaseEntity<UserDto> {
   email?: string;
   name: string;
   password?: string;
+  roles: RoleEntity[];
 }
 
 @Entity({ name: 'users' })

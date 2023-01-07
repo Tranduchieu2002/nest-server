@@ -10,13 +10,16 @@ import {
 import { AuthUser } from '../../decorators';
 import { AuthDecorators } from '../../decorators/combine-decorators';
 import { PageOptionsDto } from '../../modules/base/paginate';
+import { BaseMixinController } from '../base/base.controller';
 import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('users')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UserController extends BaseMixinController({}) {
+  constructor(private readonly userService: UserService) {
+    super(userService);
+  }
 
   @Get('me')
   @AuthDecorators()

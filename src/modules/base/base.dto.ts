@@ -1,3 +1,4 @@
+import { plainToInstance } from 'class-transformer';
 import { BaseEntity, StatusEnum } from './base.entity';
 
 interface BaseDtoOptions {
@@ -24,6 +25,13 @@ export class BaseDto {
 
       this.status = entity.status;
     }
+  }
+  
+  static plainToClass<T>(instance: new (...args: any[]) => T, object: T): T {
+    return plainToInstance(instance, object, {
+      exposeUnsetFields: true,
+      excludeExtraneousValues: true,
+    });
   }
 }
 

@@ -10,6 +10,8 @@ import { CreateRoles } from './helpers/system/add-roles-system';
 import { CreateAdmin1671965390378 } from './helpers/system/create-admin-system';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { SharedModule } from './shared/shared.module';
+import './q-builder.polyfill';
+
 
 export class AppInitialization {
   private app: INestApplication;

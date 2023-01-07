@@ -6,9 +6,7 @@ export class RoleDto extends BaseDto {
   @IsString()
   name: string;
   constructor(roleE: RoleEntity) {
-    super(roleE, {
-      excludeFields: true,
-    });
+    super(roleE);
     this.name = roleE.name;
   }
 }

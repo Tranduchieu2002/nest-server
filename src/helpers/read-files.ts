@@ -1,5 +1,6 @@
 import fs from 'fs';
 import nodePath from 'path';
+import { parse, stringify } from 'yaml'
 export const SystemFileUtils = {
   jsonFileReader: async (filePath: string): Promise<any> => {
     const fileContent =
@@ -29,4 +30,17 @@ export const SystemFileUtils = {
     const filePath = nodePath.join(__dirname, `../configs/${fileName}`);
     return SystemFileUtils.jsonFileReader(filePath);
   },
+  readYamlFilesFromFixtures: (folderName: string = 'admin') => {
+    const organizationDir = nodePath.join(__dirname, `../../fixtures/${folderName}`);
+    const files = fs.readdirSync(organizationDir);
+    const result = new Array<unknown>()
+    for (const file of files) {
+      if (file.endsWith(".yml")) {
+        const sourceFile = nodePath.join(organizationDir, file);
+        const yamlObject: any = parse(fs.readFileSync(sourceFile, "utf8"));
+        result.push(yamlObject)
+      }
+    }
+    return result
+  }
 };

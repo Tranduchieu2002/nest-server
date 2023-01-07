@@ -22,10 +22,5 @@ export class UserDto extends BaseDto {
     this.email = user.email;
     this.name = user.name;
   }
-  static plainToClass<T>(instance: new (...args: any[]) => T, object: T): T {
-    return plainToInstance(instance, object, {
-      exposeUnsetFields: true,
-      excludeExtraneousValues: true,
-    });
-  }
+  
 }

@@ -7,7 +7,7 @@ import { RoleDto } from './role.dto';
 
 @Entity('roles')
 @UseDto(RoleDto)
-export class RoleEntity extends BaseEntity {
+export class RoleEntity extends BaseEntity<RoleDto> {
   @Column({
     type: 'enum',
     enumName: 'user_roles_enum',

@@ -4,7 +4,7 @@ export class createPermissions1672073010093 implements MigrationInterface {
   name = 'createPermissions1672073010093';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query("CREATE TYPE \"user_roles_enum\" AS ENUM('USER', 'ADMIN', 'SUPER-ADMIN','GUEST')"),
+    await queryRunner.query("CREATE TYPE \"user_roles_enum\" AS ENUM('USER', 'ADMIN', 'SUPER_ADMIN','GUEST')"),
     await queryRunner.query(`
       CREATE TABLE "roles"
       (
