@@ -44,7 +44,7 @@ export class AuthService {
     // found email
     let user: UserEntity;
     if (signupDto.email) {
-      const isExistUser = await this.userService.findByEmail(signupDto.email);
+      const isExistUser = await this.userService.findOne({email: signupDto.email});
       if (isExistUser) throw new UserAlreadyExistException();
     }
     signupDto.password = this.bcryptService.generateHash(signupDto.password);

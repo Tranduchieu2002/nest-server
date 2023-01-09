@@ -10,8 +10,11 @@ import { PermissionsEntity } from '../../modules/permissions/permission.entity';
 import { RoleEntity } from '../../modules/role/role.entity';
 import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
+import { PostNotFoundException } from '../../exceptions/not-found';
+import { UseDto } from '../../decorators';
 
 @Injectable()
+@UseDto(UserDto)
 export class UserService extends BaseService<UserEntity, UserDto> {
   constructor(
     @InjectRepository(UserEntity)
@@ -35,9 +38,13 @@ export class UserService extends BaseService<UserEntity, UserDto> {
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    return this.userRepository.findOneBy({
-      email,
-    });
+    const user = this.userRepository.findOne({
+      where: { email },
+      relations: {
+        roles: true
+      }
+    })
+    return user
   }
 
   async createUser(userRegisterDto: SignUpDto): Promise<UserEntity> {

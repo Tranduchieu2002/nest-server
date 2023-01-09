@@ -16,7 +16,7 @@ import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('users')
-export class UserController extends BaseMixinController({}) {
+export class UserController extends BaseMixinController<UserEntity,UserDto>({name: "users"}) {
   constructor(private readonly userService: UserService) {
     super(userService);
   }
@@ -24,22 +24,8 @@ export class UserController extends BaseMixinController({}) {
   @Get('me')
   @AuthDecorators()
   @HttpCode(HttpStatus.OK)
-  signIn(@AuthUser() user: UserEntity): UserDto {
-    return user;
-  }
-
-  @Delete(':id')
-  @AuthDecorators()
-  @HttpCode(HttpStatus.OK)
-  deleteUser(@Param('id') id: string) {
-    return this.userService.softDelete(id as Uuid);
-  }
-
-  @Get()
-  @AuthDecorators()
-  @HttpCode(HttpStatus.OK)
-  getUsers(@Query() pageOptions: PageOptionsDto) {
-    return this.userService.getMany(pageOptions);
+  async signIn(@AuthUser() user: UserEntity): Promise<UserDto> {
+    return await this.userService.findOneById(user.id);
   }
 
   // @Post('create')

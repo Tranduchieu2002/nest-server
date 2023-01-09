@@ -54,9 +54,10 @@ export class AuthController {
   async login(@Body() userLogin: UserLoginDto): Promise<LoginPayloadDto> {
     const user = await this.userService.findByEmail(userLogin.email);
     if (!user) throw new NotFoundException();
-    user.toDto();
-    const tokenConfigs = await this.authService.generateTokens({ ...user });
-    return new LoginPayloadDto(user, tokenConfigs);
+    const userDto = user.toDto({isHasRoles: true});
+    console.log(userDto)
+    const tokenConfigs = await this.authService.generateTokens({...userDto});
+    return new LoginPayloadDto(userDto, tokenConfigs);
   }
 
 

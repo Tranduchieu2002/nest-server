@@ -2,7 +2,7 @@
 import { UseDto } from '../../decorators/useDto.decorator';
 import { RoleEntity } from '../../modules/role/role.entity';
 import { BaseEntity, IBaseEntity } from '../base/base.entity';
-import { UserDto } from './dtos/user.dto';
+import { UserDto, UserDtoOptions } from './dtos/user.dto';
 
 export interface IUserEntity extends IBaseEntity<UserDto> {
   email?: string;
@@ -13,7 +13,7 @@ export interface IUserEntity extends IBaseEntity<UserDto> {
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
-export class UserEntity extends BaseEntity<UserDto> implements IUserEntity {
+export class UserEntity extends BaseEntity<UserDto, UserDtoOptions> implements IUserEntity {
   @Column({ unique: true, nullable: true })
   email?: string;
 

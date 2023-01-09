@@ -26,13 +26,7 @@ export class BaseDto {
       this.status = entity.status;
     }
   }
-  
-  static plainToClass<T>(instance: new (...args: any[]) => T, object: T): T {
-    return plainToInstance(instance, object, {
-      exposeUnsetFields: true,
-      excludeExtraneousValues: true,
-    });
-  }
+
 }
 
 export class AbstractTranslationDto extends BaseDto {
