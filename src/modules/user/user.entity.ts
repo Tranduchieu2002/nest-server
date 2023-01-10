@@ -6,7 +6,8 @@ import { UserDto, UserDtoOptions } from './dtos/user.dto';
 
 export interface IUserEntity extends IBaseEntity<UserDto> {
   email?: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   password?: string;
   roles: RoleEntity[];
 }
@@ -21,8 +22,11 @@ export class UserEntity extends BaseEntity<UserDto, UserDtoOptions> implements I
   password: string;
   
   @Column({nullable: false})
-  name: string
+  firstName: string;
 
+  @Column({nullable: false})
+  lastName: string;
+  
   @ManyToMany(() => RoleEntity)
   @JoinTable({
     name: 'user_roles',

@@ -21,6 +21,10 @@ export class CreateAdmin1671965390378 implements MigrationInterface {
     const roleService = new RoleService(roleRepository, permissionRepository)
     for(let userSystem of defaultAdmin) {
       const adminInfo = userSystem.info
+      const { firstName, lastName } = StringConverter.splitName(adminInfo.name)
+      adminInfo.firstName = firstName;
+      adminInfo.lastName = lastName;
+      delete adminInfo.name;
       adminInfo.password = bcryptService.generateHash(adminInfo.password)
       const adminEnity : UserEntity = userRepository.create(adminInfo as UserEntity) 
       const adminRole = StringConverter.stringToArray(userSystem.roles) as RoleEnum[];

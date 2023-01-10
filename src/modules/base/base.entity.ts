@@ -30,7 +30,7 @@ export abstract class BaseEntity<Dto extends BaseDto = BaseDto, O = never>
   implements IAbstractEntity<Dto, O>
 {
   @PrimaryGeneratedColumn('uuid')
-  id: Uuid;
+  public id: Uuid;
 
   @CreateDateColumn({
     type: 'timestamp',

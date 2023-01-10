@@ -25,7 +25,7 @@ export class UserController extends BaseMixinController<UserEntity,UserDto>({nam
   @AuthDecorators()
   @HttpCode(HttpStatus.OK)
   async signIn(@AuthUser() user: UserEntity): Promise<UserDto> {
-    return await this.userService.findOneById(user.id);
+    return (await this.userService.findOneById(user.id)).toDto();
   }
 
   // @Post('create')

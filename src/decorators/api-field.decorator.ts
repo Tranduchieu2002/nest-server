@@ -109,6 +109,12 @@ export function StringField(
   return applyDecorators(...decorators);
 }
 
+export function StringOptionalField(
+  options: Omit<ApiPropertyOptions, 'type' | 'require'> & IStringFieldOptions = {},
+): PropertyDecorator {
+  options.required = false;
+  return applyDecorators(IsOptional, StringField(options));
+}
 
 export function Trim(): PropertyDecorator {
   return Transform((params) => {

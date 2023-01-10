@@ -14,14 +14,21 @@ export class UserDto extends BaseDto {
   password?: string;
   
   @IsString()
-  name: string;
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  fullName?: string = '';
 
   roles: RoleDto[];
 
   constructor(user: UserEntity, options?: UserDtoOptions) {
     super(user);
     this.email = user.email;
-    this.name = user.name;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+    this.fullName =  `${user.firstName} ${user.lastName}`;
     if(options?.isHasRoles)
       this.roles = user.roles.map(role => role.toDto())
   }

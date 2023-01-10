@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { PageOptionsDto, Pagination } from '../../modules/base/paginate';
@@ -12,6 +12,8 @@ import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
 import { PostNotFoundException } from '../../exceptions/not-found';
 import { UseDto } from '../../decorators';
+import { BcryptService } from '../auth/services/bcrypt.service';
+import { UpdateUserDto } from './dtos/user-update.dto';
 
 @Injectable()
 @UseDto(UserDto)
@@ -23,6 +25,7 @@ export class UserService extends BaseService<UserEntity, UserDto> {
     private readonly roleRepository: Repository<RoleEntity>,
     @InjectRepository(PermissionsEntity)
     private readonly permissionRepository: Repository<PermissionsEntity>,
+    private readonly bcryptService: BcryptService
   ) {
     super(userRepository);
   }
@@ -35,6 +38,45 @@ export class UserService extends BaseService<UserEntity, UserDto> {
         email: findData.email,
       })
       .getOne();
+  }
+
+  async update(id: Uuid, userDto: UpdateUserDto): Promise<UserEntity> {
+    const currentUser = await this.findOneById(id)
+      
+    if (userDto.password) {
+      if (userDto.oldPassword) {
+        const isValidOldPassword = await this.bcryptService.verifyHash(
+          userDto.oldPassword,
+          currentUser.password,
+        );
+
+        if (!isValidOldPassword) {
+          throw new HttpException(
+            {
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errors: {
+                oldPassword: 'incorrectOldPassword',
+              },
+            },
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          );
+        }
+      } else {
+        throw new HttpException(
+          {
+            status: HttpStatus.UNPROCESSABLE_ENTITY,
+            errors: {
+              oldPassword: 'missingOldPassword',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+
+    await this.userRepository.update(currentUser.id, userDto);
+
+    return this.findOneById(currentUser.id);
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {

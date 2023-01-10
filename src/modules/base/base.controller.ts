@@ -1,6 +1,6 @@
 import { RoleEnum } from "@server/constants";
 import { AuthDecorators } from "../../decorators/combine-decorators";
-import { Delete, Get, HttpCode, HttpStatus, Injectable, mixin,  Param, Query } from "@nestjs/common";
+import { Body, Delete, Get, HttpCode, HttpStatus, Injectable, mixin,  Param, Patch, Put, Query } from "@nestjs/common";
 import { BaseDto } from "./base.dto";
 import { BaseEntity } from "./base.entity";
 import { BaseService } from "./base.service";
@@ -32,6 +32,13 @@ export function BaseMixinController<Entity extends BaseEntity<dto>, dto extends 
     @HttpCode(HttpStatus.OK)
     deleteUser(@Param('id') id: string) {
       return this.baseService.softDelete(id as Uuid);
+    }
+
+    @Patch(':id')
+    @AuthDecorators()
+    @HttpCode(HttpStatus.OK)
+    updateUser(@Param('id') id: string, @Body() body: {}) {
+      return this.baseRepository.update(id, body)
     }
   }
   return mixin(BaseController)

@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermissionsEntity } from '../../modules/permissions/permission.entity';
 import { RoleEntity } from '../../modules/role/role.entity';
+import { BcryptService } from '../auth/services/bcrypt.service';
 import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
@@ -27,6 +28,7 @@ export class UserModule {
       controllers: [UserController],
       providers: [
         UserService,
+        BcryptService,
         {
           provide: 'USER_CONFIGS',
           useValue: data,
