@@ -1,16 +1,16 @@
 FROM node:lts AS dist
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install
+RUN pnpm install
 
 COPY . ./
 
-RUN yarn build
+RUN pnpm build
 
 FROM node:lts AS node_modules
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --prod
+RUN pnpm install --prod
 
 FROM node:lts
 
@@ -27,4 +27,4 @@ COPY . /usr/src/app
 
 EXPOSE $PORT
 
-CMD [ "yarn", "start:prod" ]
+CMD [ "pnpm", "start:prod" ]
