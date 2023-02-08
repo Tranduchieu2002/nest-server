@@ -18,7 +18,6 @@ export class BaseService<Entity extends BaseEntity<dto>, dto extends BaseDto> {
   }
 
   async getMany(pageOptions: PageOptionsDto): Promise<Pagination<Entity>> {
-    console.log('many')
     const queryBuilder = this.baseRepository.createQueryBuilder('users');
     try {
       const data = await queryBuilder.paginate(pageOptions);

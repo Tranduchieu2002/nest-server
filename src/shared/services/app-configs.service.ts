@@ -51,7 +51,7 @@ export class AppConfigService {
       entities,
       migrations,
       keepConnectionAlive: !this.isDevelopment,
-      dropSchema: this.isDevelopment,
+      dropSchema: false,
       type: 'postgres',
       name: 'default',
       host: this.getString('DB_HOST'),

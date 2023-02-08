@@ -8,9 +8,11 @@ import { PermissionsModule } from './modules/permissions/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { RolesModule } from './modules/role/role.module';
+import { ApplicationConfigurationsModule } from './modules/application/application.module';
 
 @Module({
   imports: [
+    ApplicationConfigurationsModule,
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,

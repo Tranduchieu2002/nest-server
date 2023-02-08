@@ -1,7 +1,7 @@
 import { Order } from '@server/constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
-import { NumberOptionalField } from '../../decorators/api-field.decorator';
+import { NumberOptionalField, StringOptionalField } from '../../decorators/api-field.decorator';
 import { ApiEnumProperty } from '../../decorators/properties.decorator';
 
 interface IPageMetaDtoParameters {
@@ -36,8 +36,7 @@ export class PageOptionsDto {
     return (this.page - 1) * this.take;
   }
 
-  @IsOptional()
-  @IsString()
+  @StringOptionalField({ swagger: true })
   readonly q?: string;
 }
 

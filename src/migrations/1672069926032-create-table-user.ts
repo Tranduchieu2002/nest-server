@@ -24,5 +24,6 @@ export class CreateUsersTable1672069926032 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('DROP TYPE "status_enum"');
+    await queryRunner.query('ALTER TABLE users DROP CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" ')
   }
 }

@@ -1,5 +1,4 @@
-import type { INestApplication } from '@nestjs/common';
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -11,10 +10,13 @@ import { CreateAdmin1671965390378 } from './helpers/system/create-admin-system';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { SharedModule } from './shared/shared.module';
 import './q-builder.polyfill';
+import { ApplicationConfigsEntity } from './modules/application/application.entity';
+import { Repository } from 'typeorm';
 
 
 export class AppInitialization {
   private app: INestApplication;
+  private appSystemConfigsRepository: Repository<ApplicationConfigsEntity> 
   private configService: AppConfigService;
   async bootstrap(): Promise<void> {
     this.app = await NestFactory.create(AppModule);
@@ -26,14 +28,20 @@ export class AppInitialization {
     this.setup();
     this.migrations();
     await this.app.listen(3000);
-  }
+  } 
   migrations() {
     dataSource
       .initialize()
-      .then(() => {
+      .then(async () => {
         console.log('Data Source has been initialized successfully.');
-        new CreateRoles().up(dataSource.createQueryRunner('master'));
-        new CreateAdmin1671965390378().up(dataSource.createQueryRunner('master'))
+        const queryRunner = dataSource.createQueryRunner('master')
+        this.appSystemConfigsRepository = queryRunner.manager.getRepository(ApplicationConfigsEntity);
+        const isMigrateData = await this.appSystemConfigsRepository.findOneBy({ isInitialized: true });
+        if(isMigrateData) return;
+        const app = this.appSystemConfigsRepository.create({ isInitialized: true });
+        new CreateRoles().up(queryRunner);
+        new CreateAdmin1671965390378().up(queryRunner)
+        this.appSystemConfigsRepository.save(app)
       })
       .catch((err) => {
         console.error('Error during Data Source initialization:', err);
