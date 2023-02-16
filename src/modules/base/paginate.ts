@@ -72,8 +72,7 @@ export class PageMetaDto {
 export class Pagination<PaginationEntity> {
   @IsArray()
   @ApiProperty({ isArray: true })
-  readonly data: PaginationEntity[];
-  public total: number;
+  readonly data: PaginationEntity[];  
   readonly meta: PageMetaDto;
 
   constructor(paginationResults: PaginationEntity[], meta: PageMetaDto) {

@@ -18,11 +18,12 @@ export class BaseService<Entity extends BaseEntity<dto>, dto extends BaseDto> {
   }
 
   async getMany(pageOptions: PageOptionsDto): Promise<Pagination<Entity>> {
-    const queryBuilder = this.baseRepository.createQueryBuilder('users');
+    console.log("object=====================")
+    const queryBuilder = this.baseRepository.createQueryBuilder();
     try {
-      const data = await queryBuilder.paginate(pageOptions);
+      const [data, pageMetaDto] = await queryBuilder.paginate(pageOptions);
 
-      return data;
+      return data.toPageDto(pageMetaDto);
     } catch (error) {
       throw new NotFoundException(HttpStatus.NOT_FOUND, 'not found');
     }

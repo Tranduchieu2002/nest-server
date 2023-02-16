@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
-import { PageOptionsDto, Pagination } from '../../modules/base/paginate';
+import { FindOptionsWhere, Repository, SelectQueryBuilder } from 'typeorm';
+import { PageMetaDto, PageOptionsDto, Pagination } from '../../modules/base/paginate';
 
 import { RoleEnum } from '../../constants/roles';
 import { SignUpDto } from '../../dtos/auth/signin.dto';
@@ -104,12 +104,11 @@ export class UserService extends BaseService<UserEntity, UserDto> {
     return user;
   }
 
-  async getMany(pageOptions: PageOptionsDto): Promise<Pagination<UserEntity>> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+  async getUsers(pageOptions: PageOptionsDto, queryBuilder: SelectQueryBuilder<UserEntity>): Promise<Pagination<UserEntity>> {
     try {
-      const data = await queryBuilder.paginate(pageOptions);
-
-      return data;
+      console.log(queryBuilder)
+      const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
+      return items.toPageDto(pageMetaDto);
     } catch (error) {
       throw new NotFoundException(HttpStatus.NOT_FOUND, 'not found');
     }

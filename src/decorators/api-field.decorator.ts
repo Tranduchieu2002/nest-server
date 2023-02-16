@@ -80,7 +80,7 @@ export function NumberOptionalField(
     INumberFieldOptions = {},
 ): PropertyDecorator {
   options.required = false;
-  return applyDecorators(IsOptional, NumberField(options));
+  return applyDecorators(IsOptional(), NumberField(options));
 }
 
 export function StringField(
@@ -113,7 +113,7 @@ export function StringOptionalField(
   options: Omit<ApiPropertyOptions, 'type' | 'require'> & IStringFieldOptions = {},
 ): PropertyDecorator {
   options.required = false;
-  return applyDecorators(IsOptional, StringField(options));
+  return applyDecorators(IsOptional(), StringField(options));
 }
 
 export function Trim(): PropertyDecorator {
