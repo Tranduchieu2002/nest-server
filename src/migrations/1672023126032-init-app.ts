@@ -8,7 +8,7 @@ export class InitApplication1672023126032 implements MigrationInterface {
       CREATE TABLE "application_configs"
       (
         "id"         uuid             NOT NULL DEFAULT uuid_generate_v4(),
-        "created_at" TIMESTAMP        NOT NULL DEFAULT now(),
+        "created_at" TIMESTAMPZ        NOT NULL DEFAULT now(),
         "is_initialized" boolean       NOT NULL DEFAULT true
       )`);
     

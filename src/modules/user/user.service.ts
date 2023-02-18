@@ -106,11 +106,10 @@ export class UserService extends BaseService<UserEntity, UserDto> {
 
   async getUsers(pageOptions: PageOptionsDto, queryBuilder: SelectQueryBuilder<UserEntity>): Promise<Pagination<UserEntity>> {
     try {
-      console.log(queryBuilder)
       const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
       return items.toPageDto(pageMetaDto);
     } catch (error) {
       throw new NotFoundException(HttpStatus.NOT_FOUND, 'not found');
     }
-  }
+  } 
 }

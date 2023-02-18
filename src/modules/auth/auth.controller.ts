@@ -62,7 +62,6 @@ export class AuthController {
 
 
   @Post('refresh')
-  @AuthDecorators()
   @ApiOkResponse({
     type: RefreshTokenResponseDto,
     description: "Get accessToken by refreshToken",
@@ -72,8 +71,8 @@ export class AuthController {
     @Body() body: RefreshTokenPayloadDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refeshToken = body?.access_token;
-    const acToken = body?.refresh_token;
+    const acToken = body?.access_token;
+    const refeshToken = body?.refresh_token;
     if (!refeshToken || !acToken) throw new BadRequestException();
     const user = this.authService.jwtDecode(acToken as string);
     const isValidToken = this.authService.validateToken(refeshToken as string);
