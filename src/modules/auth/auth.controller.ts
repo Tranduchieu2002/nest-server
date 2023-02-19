@@ -55,7 +55,6 @@ export class AuthController {
     const user = await this.userService.findByEmail(userLogin.email);
     if (!user) throw new NotFoundException();
     const userDto = user.toDto({isHasRoles: true});
-    console.log(userDto)
     const tokenConfigs = await this.authService.generateTokens({...userDto});
     return new LoginPayloadDto(userDto, tokenConfigs);
   }
@@ -74,11 +73,12 @@ export class AuthController {
     const acToken = body?.access_token;
     const refeshToken = body?.refresh_token;
     if (!refeshToken || !acToken) throw new BadRequestException();
-    const user = this.authService.jwtDecode(acToken as string);
+    const user = JSON.stringify(this.authService.jwtDecode(acToken as string)) as unknown;
+    const userModified : UserEntity= await this.userService.userByRelations((user?.["id"]) as any, { roles: true } );
     const isValidToken = this.authService.validateToken(refeshToken as string);
     if (!isValidToken) throw new UnauthorizedException();
     const { accessToken, expirseTime } = await this.authService.refeshToken(
-      JSON.stringify(new UserDto(user as UserEntity)),
+      JSON.stringify(new UserDto(userModified as UserEntity, { isHasRoles: true })),
     );
     return new RefreshTokenResponseDto({
       message: 'ok',

@@ -89,6 +89,17 @@ export class UserService extends BaseService<UserEntity, UserDto> {
     return user
   }
 
+  async userByRelations(id: string, relations?: { roles?: boolean, permissions?: boolean }) : Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { id :  id as any },
+      relations: relations
+    })
+    if(!user) {
+      throw new NotFoundException("Not found!")
+    }
+    return user
+  }
+
   async createUser(userRegisterDto: SignUpDto): Promise<UserEntity> {
     const user = this.userRepository.create(userRegisterDto);
     const permissions = await this.roleRepository.find({
