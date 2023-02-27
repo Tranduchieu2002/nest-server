@@ -17,6 +17,7 @@ import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PermissionsSevice } from '../permissions/permisson.service';
 
 const options: OptionsMixinController = {
   name: "user",
@@ -26,7 +27,8 @@ const options: OptionsMixinController = {
 @Controller('user')
 export class UserController extends BaseMixinController<UserEntity, UserDto>(options) {
   constructor(private readonly userService: UserService,
-    @InjectRepository(UserEntity) userRepository: Repository<UserEntity>
+    @InjectRepository(UserEntity) userRepository: Repository<UserEntity>,
+    private readonly permissionService: PermissionsSevice
   ) {
     super(userService, userRepository);
     if (userRepository) this.createQueryBuilderDefault()
@@ -47,6 +49,12 @@ export class UserController extends BaseMixinController<UserEntity, UserDto>(opt
     return (await this.userService.findOneById(user.id)).toDto();
   }
 
+  @AuthDecorators([RoleEnum.USER])
+  @Get("permissions/:id")
+  @HttpCode(HttpStatus.OK)
+  getUserPermission(@Param(":id") userId: Uuid) {
+    return this.permissionService.getUserPermissions(userId);
+  }
   // @Post('create')
   // @HttpCode(HttpStatus.CREATED)
   // create(@Body() user: UserDto) {

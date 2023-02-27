@@ -10,9 +10,9 @@ export class createPermissions1672073010093 implements MigrationInterface {
       (
         "id"        uuid              NOT NULL DEFAULT uuid_generate_v4(),
         "name"      "user_roles_enum" NOT NULL DEFAULT 'USER',
-        "created_at" TIMESTAMPZ         NOT NULL DEFAULT now(),
-        "updated_at" TIMESTAMPZ         NOT NULL DEFAULT now(),
-        "deleted_at" TIMESTAMPZ         DEFAULT null,
+        "created_at" TIMESTAMP         NOT NULL DEFAULT now(),
+        "updated_at" TIMESTAMP         NOT NULL DEFAULT now(),
+        "deleted_at" TIMESTAMP         DEFAULT null,
         "status"    "status_enum"     NOT NULL DEFAULT 'ACTIVE',
         CONSTRAINT  "FK_a3ffb1c0c8416b9fc6f907b7433"  PRIMARY KEY ("id")
       )`);

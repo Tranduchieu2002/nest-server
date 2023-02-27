@@ -9,9 +9,9 @@ export class CreateUsersTable1672069926032 implements MigrationInterface {
       CREATE TABLE "users"
       (
         "id"         uuid             NOT NULL DEFAULT uuid_generate_v4(),
-        "created_at" TIMESTAMPZ         NOT NULL DEFAULT now(),
-        "updated_at" TIMESTAMPZ         NOT NULL DEFAULT now(),
-        "deleted_at" TIMESTAMPZ         DEFAULT null,
+        "created_at" TIMESTAMP         NOT NULL DEFAULT now(),
+        "updated_at" TIMESTAMP         NOT NULL DEFAULT now(),
+        "deleted_at" TIMESTAMP         DEFAULT null,
         "status"    "status_enum"     NOT NULL DEFAULT 'ACTIVE',
         "email"     character varying,
         "first_name"      character varying,
