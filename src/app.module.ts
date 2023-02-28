@@ -9,6 +9,7 @@ import { UserModule } from './modules/user/user.module';
 import { AppConfigService } from './shared/services/app-configs.service';
 import { RolesModule } from './modules/role/role.module';
 import { ApplicationConfigurationsModule } from './modules/application/application.module';
+import { CloudinaryModule } from './modules/cloud-dinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ApplicationConfigurationsModule } from './modules/application/applicati
     SharedModule,
     UserModule.register({ name: ' duma ', password: 'con me no' }),
     PermissionsModule,
+    CloudinaryModule,
   ],
 })
 export class AppModule {}

@@ -50,9 +50,9 @@ export class UserController extends BaseMixinController<UserEntity, UserDto>(opt
   }
 
   @AuthDecorators([RoleEnum.USER])
-  @Get("permissions/:id")
+  @Get(":id/permissions")
   @HttpCode(HttpStatus.OK)
-  getUserPermission(@Param(":id") userId: Uuid) {
+  getUserPermission(@Param("id") userId: Uuid) {
     return this.permissionService.getUserPermissions(userId);
   }
   // @Post('create')

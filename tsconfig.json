@@ -19,6 +19,7 @@
     "incremental": true,
     "strictNullChecks": true,
     "paths": {
+      "@/shared": ["./src/shared/*"],
       "@/*": ["./src/*"],
     }
   },

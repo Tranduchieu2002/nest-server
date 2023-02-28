@@ -33,4 +33,19 @@ export class PermissionsSevice {
       .getOne();
     return userByRoles?.roles;
   }
+
+  async getUserPermissions(userId: Uuid) {
+    console.log("userId ", userId)
+    // const p = this.userRepository.createQueryBuilder('permissions').leftJoin("permissions.roles", "roles").leftJoin("roles.permisions")
+    const permissions: string[] = await this.userRepository.manager.query(`
+      SELECT p.name FROM permissions p
+      WHERE EXISTS (
+        SELECT 2
+        FROM user_roles ur
+        JOIN role_permissions rp ON ur.role_id = rp.role_id
+        WHERE ur.user_id = '${userId}'
+        AND rp.permission_id = p.id
+    );`)
+    return permissions;
+  }
 }
