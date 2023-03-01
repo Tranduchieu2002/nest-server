@@ -1,4 +1,4 @@
-import { Tokens } from '@/constants';
+import { Tokens } from '@server/constants';
 import { StringField } from '../../../decorators/api-field.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserDto } from '../../../modules/user/dtos/user.dto';

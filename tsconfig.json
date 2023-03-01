@@ -19,8 +19,10 @@
     "incremental": true,
     "strictNullChecks": true,
     "paths": {
-      "@/shared": ["./src/shared/*"],
-      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/decorators/*":  ["./src/decorators/*"],
+      "@/modules/*": ["./src/modules/*"],
+      "@/types": ["./src/types.ts"],
     }
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
