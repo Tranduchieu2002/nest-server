@@ -11,6 +11,10 @@ import { RoleService } from '../../modules/role/role.service';
 export class CreateAdmin1671965390378 implements MigrationInterface {
   name = 'createAdmin1671965390378';
 
+  splitFullname(fullname): ReturnType<typeof StringConverter.splitName > {
+    return StringConverter.splitName(fullname)
+  }
+  
   public async up(queryRunner: QueryRunner): Promise<void> {
     const defaultAdmin: any[] = await SystemFileUtils.readYamlFilesFromFixtures();
     const bcryptService  = new BcryptService()
@@ -20,16 +24,19 @@ export class CreateAdmin1671965390378 implements MigrationInterface {
       queryRunner.manager.getRepository(PermissionsEntity);
     const roleService = new RoleService(roleRepository, permissionRepository)
     for(let userSystem of defaultAdmin) {
+
       const adminInfo = userSystem.info
-      const { firstName, lastName } = StringConverter.splitName(adminInfo.name)
+      const { firstName, lastName } = this.splitFullname(adminInfo.name)
       adminInfo.firstName = firstName;
       adminInfo.lastName = lastName;
       delete adminInfo.name;
       adminInfo.password = bcryptService.generateHash(adminInfo.password)
+
       const adminEnity : UserEntity = userRepository.create(adminInfo as UserEntity) 
       const adminRole = StringConverter.stringToArray(userSystem.roles) as RoleEnum[];
       const adminRoles = new Array()
-      const adminPermissions : string[]= userSystem.permissions
+      const adminPermissions = StringConverter.stringToArray(userSystem.permissions)
+      if(!adminPermissions) return;
       for(let role of adminRole) {
         adminRoles.push(await roleService.createRoleWithPermissions(role, adminPermissions))
       }

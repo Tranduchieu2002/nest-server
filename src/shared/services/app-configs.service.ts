@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from '../../snake-naming.strategy';
+import { CloudinaryModuleOptions } from '../../modules/cloud-dinary/cloudinary.options';
 
 @Injectable()
 export class AppConfigService {
@@ -66,6 +67,15 @@ export class AppConfigService {
       namingStrategy: new SnakeNamingStrategy(),
     };
   }
+
+  getCloudinaryConfig(): CloudinaryModuleOptions {
+    return {
+      api_secret: this.getString('CLOUDINARY_SECRET_KEY'),
+      api_key: this.getString('CLOUDINARY_API_KEY'),
+      cloud_name: this.getString('CLOUDINARY_CLOUD_NAME')
+    }
+  }
+
   get nodeEnv(): string {
     return this.getString('NODE_ENV');
   }

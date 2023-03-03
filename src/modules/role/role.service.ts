@@ -1,4 +1,4 @@
-import { RoleEnum } from "@/constants";
+import { RoleEnum } from "@server/constants";
 import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { StatusEnum } from "../base/base.entity";

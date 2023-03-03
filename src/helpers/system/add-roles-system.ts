@@ -9,7 +9,7 @@ export class CreateRoles {
 
   constructor() {} // private readonly roleRepository: Repository<RoleEntity>, // @InjectRepository(RoleEntity) // private readonly permissionRepository: Repository<PermissionsEntity>, // @InjectRepository(PermissionsEntity)
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const defaultPermissions: any[] = await SystemFileUtils.getConfigs(
+    const defaultRoles: any[] = await SystemFileUtils.getConfigs(
       'permissons.json',
     );
 
@@ -17,7 +17,7 @@ export class CreateRoles {
     const permissionRepository =
     queryRunner.manager.getRepository(PermissionsEntity);
     const roleService = new RoleService(roleRepository, permissionRepository)
-    for (const role of defaultPermissions) {
+    for (const role of defaultRoles) {
       const permissions: string[] = role.permissions;
       await roleService.createRoleWithPermissions(role.name, permissions)
     }

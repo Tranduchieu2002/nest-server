@@ -1,3 +1,4 @@
+import { Order, RoleEnum } from '@server/constants';
 import {
   Controller,
   Delete,
@@ -9,17 +10,37 @@ import {
 } from '@nestjs/common';
 import { AuthUser } from '../../decorators';
 import { AuthDecorators } from '../../decorators/combine-decorators';
-import { PageOptionsDto } from '../../modules/base/paginate';
-import { BaseMixinController } from '../base/base.controller';
+import { PageOptionsDto, Pagination } from '../../modules/base/paginate';
+import { BaseMixinController, OptionsMixinController } from '../base/base.controller';
 import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { PermissionsSevice } from '../permissions/permisson.service';
 
-@Controller('users')
-export class UserController extends BaseMixinController<UserEntity,UserDto>({name: "users"}) {
-  constructor(private readonly userService: UserService) {
-    super(userService);
+const options: OptionsMixinController = {
+  name: "user",
+  defaultSearchByFields: ["createdAt"],
+  sort: Order.DESC
+}
+@Controller('user')
+export class UserController extends BaseMixinController<UserEntity, UserDto>(options) {
+  constructor(private readonly userService: UserService,
+    @InjectRepository(UserEntity) userRepository: Repository<UserEntity>,
+    private readonly permissionService: PermissionsSevice
+  ) {
+    super(userService, userRepository);
+    if (userRepository) this.createQueryBuilderDefault()
   }
+
+  @Get()
+  @AuthDecorators([RoleEnum.ADMIN])
+  @HttpCode(HttpStatus.OK)
+  getUsers(pageOptions: PageOptionsDto): Promise<Pagination<UserEntity>> {
+    return this.userService.getUsers(pageOptions, this.queryBuilder)
+  }
+
 
   @Get('me')
   @AuthDecorators()
@@ -28,6 +49,12 @@ export class UserController extends BaseMixinController<UserEntity,UserDto>({nam
     return (await this.userService.findOneById(user.id)).toDto();
   }
 
+  @AuthDecorators([RoleEnum.USER])
+  @Get(":id/permissions")
+  @HttpCode(HttpStatus.OK)
+  getUserPermission(@Param("id") userId: Uuid) {
+    return this.permissionService.getUserPermissions(userId);
+  }
   // @Post('create')
   // @HttpCode(HttpStatus.CREATED)
   // create(@Body() user: UserDto) {
