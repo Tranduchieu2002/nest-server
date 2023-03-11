@@ -4,7 +4,7 @@ import { FindOptionsWhere, Repository, SelectQueryBuilder } from 'typeorm';
 import { PageMetaDto, PageOptionsDto, Pagination } from '../../modules/base/paginate';
 
 import { RoleEnum } from '../../constants/roles';
-import { SignUpDto } from '../../dtos/auth/signin.dto';
+import { SignUpDto } from '../../dtos/auth/signUp.dto';
 import { BaseService } from '../../modules/base/base.service';
 import { PermissionsEntity } from '../../modules/permissions/permission.entity';
 import { RoleEntity } from '../../modules/role/role.entity';

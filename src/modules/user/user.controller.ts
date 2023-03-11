@@ -1,11 +1,13 @@
 import { Order, RoleEnum } from '@server/constants';
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Query,
 } from '@nestjs/common';
 import { AuthUser } from '../../decorators';
@@ -18,6 +20,7 @@ import { UserService } from './user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PermissionsSevice } from '../permissions/permisson.service';
+import { StringConverter } from '../../utils';
 
 const options: OptionsMixinController = {
   name: "user",
@@ -55,12 +58,28 @@ export class UserController extends BaseMixinController<UserEntity, UserDto>(opt
   getUserPermission(@Param("id") userId: Uuid) {
     return this.permissionService.getUserPermissions(userId);
   }
-  // @Post('create')
-  // @HttpCode(HttpStatus.CREATED)
-  // create(@Body() user: UserDto) {
-  //   this.userService.createUser(user);
-  //   return {
-  //     message: 'ok',
-  //   };
-  // }
+  @Get(':id')
+  @AuthDecorators([RoleEnum.USER])
+  @HttpCode(HttpStatus.CREATED)
+  async getUserDetail(@Param('id') id: Uuid) {
+  const userInfo = await this.userService.userByRelations(id, { roles: true });
+  
+  return userInfo.toDto({ isHasRoles: true,})
+  }
+
+  @Patch(':id')
+  @AuthDecorators([RoleEnum.USER])
+  @HttpCode(HttpStatus.OK) 
+  async editUser(@Param('id') id: Uuid, @Body() body: any) {
+    let userModify = body;
+    if(body?.fullName) {
+    delete userModify.dateOfBirth
+    Object.assign(
+      userModify,
+      StringConverter.splitName(userModify.fullName)
+      )
+    }
+    delete userModify.fullName
+    return (await this.userService.updateInstanceById(id, userModify)).toDto()
+  }
 }

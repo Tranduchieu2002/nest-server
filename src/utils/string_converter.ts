@@ -1,3 +1,9 @@
+const sharingStringConverter = {
+  transformFalsyToEmptyStr(str?: string) {
+    return str || ''
+  }
+}
+
 export const StringConverter = {
   stringToArray(value?: string,symbol: string = ',') : string[] | null {
     if(!value) return null 
@@ -10,5 +16,9 @@ export const StringConverter = {
       firstName: firstName,
       lastName: lastName.join(' ')
     }
-  }
+  },
+  combineName(firstName: string, lastName: string) : string {
+    return `${sharingStringConverter.transformFalsyToEmptyStr(firstName)} ${sharingStringConverter.transformFalsyToEmptyStr(lastName)}`.trim();
+  },
+  ...sharingStringConverter
 }

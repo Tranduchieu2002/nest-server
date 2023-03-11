@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, plainToInstance, Transform } from 'class-transformer';
 import { IsBoolean, IsEmail, IsString } from 'class-validator';
-import { StringField } from '../../decorators';
+import { StringConverter } from '@server/utils';
+import { StringField, StringOptionalField } from '../../decorators';
 
 export class SignUpDto {
   @StringField({isEmail: true, swagger: true})
@@ -20,7 +21,16 @@ export class SignUpDto {
   remember: boolean;
 
   @StringField({swagger: true, min: 3, max: 22})
-  readonly name: string
+  readonly firstName: string
+
+  @StringField({swagger: true, min: 3, max: 22})
+  readonly lastName: string
+
+  @Expose()
+  get fullName() {
+    const fullName: string = StringConverter.combineName(this.firstName, this.lastName);
+    return fullName;
+  }
 
   static plainToClass<T>(instance: new (...args: any[]) => T, object: T): T {
     return plainToInstance(instance, object, {
