@@ -22,7 +22,7 @@ export function BaseMixinController<Entity extends BaseEntity<dto>, dto extends 
     sort,
   } = options
   class BaseController {
-    protected queryBuilder: SelectQueryBuilder<Entity>
+    public queryBuilder: SelectQueryBuilder<Entity>
     constructor(
       private readonly baseService: BaseService<Entity, dto>,
       private readonly baseRepository: Repository<Entity>
@@ -41,6 +41,13 @@ export function BaseMixinController<Entity extends BaseEntity<dto>, dto extends 
       return data;
     }
 
+    @Get(':id')
+    @AuthDecorators([RoleEnum.ADMIN, ...rolesAccess])
+    @HttpCode(HttpStatus.OK)
+    getUserById(@Param('id') id: string) {
+      return this.baseService.findOneById(id as Uuid);
+    }
+
     @Delete(':id')
     @AuthDecorators([RoleEnum.ADMIN, ...rolesAccess])
     @HttpCode(HttpStatus.OK)
@@ -51,8 +58,9 @@ export function BaseMixinController<Entity extends BaseEntity<dto>, dto extends 
     @Patch(':id')
     @AuthDecorators()
     @HttpCode(HttpStatus.OK)
-    updateUser(@Param('id') id: string, @Body() body: {}) {
-      return this.baseRepository.update(id, body)
+    async updateUser(@Param('id') id: Uuid, @Body() body: {}) {
+      const dataAfterSave = await this.baseService.updateInstanceById(id, body);
+      return dataAfterSave.toDto();
     }
 
     beforGetAll(data: Pagination<Entity>): Pagination<Entity> {

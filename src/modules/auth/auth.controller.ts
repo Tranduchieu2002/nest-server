@@ -13,7 +13,7 @@ import {
 import { ApiOkResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthDecorators } from '../../decorators/combine-decorators';
-import { SignUpDto } from '../../dtos/auth/signin.dto';
+import { SignUpDto } from '../../dtos/auth/signUp.dto';
 import { UserDto } from '../../modules/user/dtos/user.dto';
 import { UserService } from '../../modules/user/user.service';
 import { AppConfigService } from '../../shared/services/app-configs.service';
@@ -35,12 +35,7 @@ export class AuthController {
   @Post('signup')
   async signUp(@Body() userRegisterDto: SignUpDto): Promise<UserDto> {
     const SignUpDto: SignUpDto = userRegisterDto;
-    const user = await this.authService.registation({
-      email: SignUpDto.email,
-      password: String(SignUpDto.password),
-      remember: false,
-      name: String(SignUpDto.name)
-    });
+    const user = await this.authService.registation(SignUpDto);
     return user.toDto();
   }
 

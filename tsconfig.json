@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
     "removeComments": true,
@@ -19,6 +19,7 @@
     "incremental": true,
     "strictNullChecks": true,
     "paths": {
+      "@/exceptions": ["./src/exceptions/index.ts"],
       "@/shared/*": ["./src/shared/*"],
       "@/decorators/*":  ["./src/decorators/*"],
       "@/modules/*": ["./src/modules/*"],

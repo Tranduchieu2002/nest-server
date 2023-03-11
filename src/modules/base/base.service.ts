@@ -43,4 +43,9 @@ export class BaseService<Entity extends BaseEntity<dto>, dto extends BaseDto> {
     }
     return queryBuilder;
   }
+
+  async updateInstanceById(id: Uuid, data: object) {
+    this.baseRepository.update(id,data)
+    return this.findOneById(id);
+  }
 }

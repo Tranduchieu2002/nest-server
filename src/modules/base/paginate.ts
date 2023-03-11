@@ -1,3 +1,4 @@
+/* The PageMetaDto class is a data transfer object that contains the metadata of a paginated response */
 import { Order } from '@server/constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
@@ -10,6 +11,7 @@ interface IPageMetaDtoParameters {
 }
 
 export class PageOptionsDto {
+  /* A decorator that is used to validate the input parameters of a function. */
   @IsOptional()
   @ApiEnumProperty({
     enum: Order,
@@ -69,6 +71,9 @@ export class PageMetaDto {
   }
 }
 
+/* The Pagination class is a generic class that takes a generic type PaginationEntity and has two
+properties: data and meta. The data property is an array of the generic type PaginationEntity and
+the meta property is of type PageMetaDto */
 export class Pagination<PaginationEntity> {
   @IsArray()
   @ApiProperty({ isArray: true })
