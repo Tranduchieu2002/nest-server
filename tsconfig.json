@@ -19,7 +19,7 @@
     "incremental": true,
     "strictNullChecks": true,
     "paths": {
-      "@/exceptions": ["./src/exceptions/index.ts"],
+      "@/exceptions/*": ["./src/exceptions/*"],
       "@/shared/*": ["./src/shared/*"],
       "@/decorators/*":  ["./src/decorators/*"],
       "@/modules/*": ["./src/modules/*"],

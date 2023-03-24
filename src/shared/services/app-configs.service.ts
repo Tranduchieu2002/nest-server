@@ -25,7 +25,7 @@ export class AppConfigService {
       publicKey: this.getString('JWT_PUBLIC_KEY'),
       jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
       refreshKey: this.getString('REFRESH_TOKEN_KEY'),
-    };
+    }
   }
 
   get enableDocuments() {
