@@ -11,9 +11,9 @@ import {
 } from 'cloudinary';
 import sharp from 'sharp';
 import { CloudinaryModuleOptions } from './cloudinary.options';
-import { defaultCreateSignedUploadUrlOptions, IFile, ISharpInputOptions, ISignedUploadUrlOptions } from './interfaces';
-import { MODULE_OPTIONS_TOKEN } from '@nestjs/common/cache/cache.module-definition';
+import { defaultCreateSignedUploadUrlOptions, ISharpInputOptions, ISignedUploadUrlOptions } from './interfaces';
 import { CLOUDINARY } from '@server/constants/cloud-dinary';
+import { IFile } from '@/decorators/index';
 
 @Injectable()
 export class CloudinaryService {
@@ -41,6 +41,7 @@ export class CloudinaryService {
     file: IFile,
     options?: UploadApiOptions,
     sharpOptions?: ISharpInputOptions,
+    hasBlurImagePreview?: boolean
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise(async (resolve, reject) => {
       const upload = cloudinary.uploader.upload_stream(
@@ -58,20 +59,25 @@ export class CloudinaryService {
       );
 
       const stream: Readable = new Readable();
-
       if (sharpOptions && file.mimetype.match(/^image/)) {
         const options = { width: 800, ...sharpOptions };
         const shrinkedImage = await sharp(file.buffer)
-          .resize(options)
-          .toBuffer();
-
+        .resize(options)
+        .toBuffer();
         stream.push(shrinkedImage);
       } else {
         stream.push(file.buffer);
       }
+      if(hasBlurImagePreview) {
+        const options = { width: 800, ...sharpOptions }
+        const blurImage = await sharp(file.buffer)
+        .resize(options)
+        .blur()
+        .toBuffer();
+        stream.push(blurImage);
+      }
       stream.push(null);
-
-      stream.pipe(upload);
+     console.log(stream.pipe(upload).readableObjectMode)
     });
   }
 

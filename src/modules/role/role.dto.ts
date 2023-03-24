@@ -9,7 +9,7 @@ export type RoleDtoOptions = Partial<{ isActive: boolean , isHasPermissions: boo
 export class RoleDto extends AbstractTranslationDto {
   @IsString()
   name: string;  
-  constructor(roleE: RoleEntity, options: RoleDtoOptions) {
+  constructor(roleE: RoleEntity, options?: RoleDtoOptions) {
     super(roleE);
     this.name = roleE.name;
   }

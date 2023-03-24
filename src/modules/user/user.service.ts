@@ -14,8 +14,9 @@ import { PostNotFoundException } from '../../exceptions/not-found';
 import { UseDto } from '../../decorators';
 import { BcryptService } from '../auth/services/bcrypt.service';
 import { UpdateUserDto } from './dtos/user-update.dto';
+import { PhotoService } from '../photo/photo.service';
+import { remove } from 'lodash';
 
-@Injectable()
 @UseDto(UserDto)
 export class UserService extends BaseService<UserEntity, UserDto> {
   constructor(
@@ -25,7 +26,8 @@ export class UserService extends BaseService<UserEntity, UserDto> {
     private readonly roleRepository: Repository<RoleEntity>,
     @InjectRepository(PermissionsEntity)
     private readonly permissionRepository: Repository<PermissionsEntity>,
-    private readonly bcryptService: BcryptService
+    private readonly bcryptService: BcryptService,
+    private readonly photoService: PhotoService
   ) {
     super(userRepository);
   }
@@ -89,11 +91,15 @@ export class UserService extends BaseService<UserEntity, UserDto> {
     return user
   }
 
-  async userByRelations(id: string, relations?: { roles?: boolean, permissions?: boolean }) : Promise<UserEntity> {
+  async userByRelations(id: string, relations?: { roles?: boolean, avatar?: boolean }) : Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { id :  id as any },
-      relations: relations
+      relations: {
+        avatar: true,
+        ...relations
+      }
     })
+    console.log(user)
     if(!user) {
       throw new NotFoundException("Not found!")
     }
@@ -123,4 +129,21 @@ export class UserService extends BaseService<UserEntity, UserDto> {
       throw new NotFoundException(HttpStatus.NOT_FOUND, 'not found');
     }
   } 
+  async updateUser(userId: Uuid, data: any) {
+    const userInstance = await this.findOneById(userId);
+    if(data?.avatar) {
+      const photoInstance = await this.photoService.updatePhoto(data.avatar);
+      userInstance.avatar = photoInstance;
+    }
+    
+    delete data.avatar;
+    console.log(data)
+
+    Object.keys(data).forEach((key, i) => {
+      userInstance[key] = data[key]
+    })
+
+    return this.userRepository.save(userInstance);
+
+  }
 }

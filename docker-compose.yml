@@ -1,16 +1,16 @@
 version: "3.9"
 services:
-  app:
-    image: learn_nest:v0.0.1
-    env_file:
-      - .env
-    container_name: nest-server
-    restart: always
-    build: .
-    ports:
-      - "$PORT:$PORT"
-    links:
-      - postgres
+  # app:
+  #   image: learn_nest:v0.0.1
+  #   env_file:
+  #     - .env
+  #   container_name: nest-server
+  #   restart: always
+  #   build: .
+  #   ports:
+  #     - "$PORT:$PORT"
+  #   links:
+  #     - postgres
   postgres:
     image: postgres
     container_name: postgres-database

@@ -21,6 +21,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PermissionsSevice } from '../permissions/permisson.service';
 import { StringConverter } from '../../utils';
+import moment from 'moment';
 
 const options: OptionsMixinController = {
   name: "user",
@@ -46,10 +47,10 @@ export class UserController extends BaseMixinController<UserEntity, UserDto>(opt
 
 
   @Get('me')
-  @AuthDecorators()
+  @AuthDecorators([RoleEnum.USER])
   @HttpCode(HttpStatus.OK)
   async signIn(@AuthUser() user: UserEntity): Promise<UserDto> {
-    return (await this.userService.findOneById(user.id)).toDto();
+    return (await this.userService.userByRelations(user.id, { avatar: true, roles: true })).toDto({ isAvatar: true });
   }
 
   @AuthDecorators([RoleEnum.USER])
@@ -63,8 +64,7 @@ export class UserController extends BaseMixinController<UserEntity, UserDto>(opt
   @HttpCode(HttpStatus.CREATED)
   async getUserDetail(@Param('id') id: Uuid) {
   const userInfo = await this.userService.userByRelations(id, { roles: true });
-  
-  return userInfo.toDto({ isHasRoles: true,})
+  return userInfo.toDto({ isAvatar: true })
   }
 
   @Patch(':id')
@@ -73,13 +73,15 @@ export class UserController extends BaseMixinController<UserEntity, UserDto>(opt
   async editUser(@Param('id') id: Uuid, @Body() body: any) {
     let userModify = body;
     if(body?.fullName) {
-    delete userModify.dateOfBirth
     Object.assign(
       userModify,
       StringConverter.splitName(userModify.fullName)
       )
     }
+    if(userModify?.dateOfBirth) {
+      userModify.dateOfBirth = moment(userModify.dateOfBirth).toDate();
+    }
     delete userModify.fullName
-    return (await this.userService.updateInstanceById(id, userModify)).toDto()
+    return (await this.userService.updateUser(id, userModify)).toDto();
   }
 }

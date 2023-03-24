@@ -7,9 +7,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PermissionsModule } from './modules/permissions/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { AppConfigService } from './shared/services/app-configs.service';
-import { RolesModule } from './modules/role/role.module';
 import { ApplicationConfigurationsModule } from './modules/application/application.module';
 import { CloudinaryModule } from './modules/cloud-dinary/cloudinary.module';
+import { UploaderModule } from './modules/uploader/uploader.module';
+import { PhotoModule } from './modules/photo/photo.module';
 
 @Module({
   imports: [
@@ -28,8 +29,10 @@ import { CloudinaryModule } from './modules/cloud-dinary/cloudinary.module';
     }),
     SharedModule,
     UserModule.register({ name: ' duma ', password: 'con me no' }),
+    PhotoModule,
     PermissionsModule,
     CloudinaryModule,
+    UploaderModule.register(),
   ],
 })
 export class AppModule {}
