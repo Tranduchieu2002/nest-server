@@ -61,6 +61,7 @@ export class AppConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
       // subscribers: [UserSubscriber],
+      autoLoadEntities: true,
       migrationsRun: true,
       synchronize: false,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),

@@ -11,6 +11,7 @@ import { ApplicationConfigurationsModule } from './modules/application/applicati
 import { CloudinaryModule } from './modules/cloud-dinary/cloudinary.module';
 import { UploaderModule } from './modules/uploader/uploader.module';
 import { PhotoModule } from './modules/photo/photo.module';
+import { ProblemsModule } from './modules/problems/problems.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PhotoModule } from './modules/photo/photo.module';
     PermissionsModule,
     CloudinaryModule,
     UploaderModule.register(),
+    ProblemsModule,
   ],
 })
 export class AppModule {}
