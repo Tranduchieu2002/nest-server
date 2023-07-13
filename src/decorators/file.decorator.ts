@@ -127,7 +127,7 @@ export function ApiFile(
     if it's not already an array. Assigns the result to constant "filesArray".  
    */
   const filesArray = _.castArray(files);
-
+  console.log(filesArray);
   /*
     This maps through each "file" within "filesArray"(using JavaScript map() method), 
     and transforms them into instance of FilesInterceptor or FileInterceptor. 
