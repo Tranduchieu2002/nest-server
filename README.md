@@ -1,5 +1,3 @@
-# Learn NestJS
-
 This project is built using NestJS, a progressive framework for building efficient, scalable, and enterprise-grade Node.js applications. 
 
 ## Installation
